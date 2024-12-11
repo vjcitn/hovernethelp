@@ -46,7 +46,6 @@ Rscript -e "$R_EXPR"
 
 ## Run run_infer.py
 cd ~
-conda activate hovernet
 echo ""
 echo "RUN run_infer.py SCRIPT" 
 python ~/hover_net/run_infer.py \

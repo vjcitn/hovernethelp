@@ -45,13 +45,20 @@ R_EXPR="$R_EXPR cat('DONE\n')"
 Rscript -e "$R_EXPR"
 
 ## Run run_infer.py
+## Note: using batch_size=64 caused the following error on the hovernet1-4
+## instances:
+##   tracker.py:254: UserWarning: resource_tracker: There appear to be 2
+##     leaked semaphore objects to clean up at shutdown
+##       warnings.warn('resource_tracker: There appear to be %d '
+##     Killed
+## so we reduced to batch_size=48.
 cd ~
 echo ""
 echo "RUN run_infer.py SCRIPT" 
 python ~/hover_net/run_infer.py \
 	--nr_types=6 \
 	--type_info_path=$HOME/hover_net/type_info.json \
-	--batch_size=64 \
+	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
 	--nr_inference_workers=12 \

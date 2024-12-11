@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Typical usage:
+#   time hovernetstuff/infer_batch.sh 101:120
 
 set -e  # Exit immediately if a simple command exits with a non-zero status
 
@@ -45,13 +48,13 @@ R_EXPR="$R_EXPR cat('DONE\n')"
 Rscript -e "$R_EXPR"
 
 ## Run run_infer.py
-## Note: using batch_size=64 caused the following error on the hovernet1-4
-## instances:
+## Note: using batch_size=64 and nr_inference_workers=12 caused the following
+## error on the hovernet1-4 instances:
 ##   tracker.py:254: UserWarning: resource_tracker: There appear to be 2
 ##     leaked semaphore objects to clean up at shutdown
 ##       warnings.warn('resource_tracker: There appear to be %d '
 ##     Killed
-## so we reduced to batch_size=48.
+## so we reduced to batch_size=48 and nr_inference_workers=10.
 cd ~
 echo ""
 echo "RUN run_infer.py SCRIPT" 
@@ -61,7 +64,7 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=12 \
+	--nr_inference_workers=10 \
 	--nr_post_proc_workers=15 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \

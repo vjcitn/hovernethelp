@@ -73,10 +73,13 @@ fi
 ##       warnings.warn('resource_tracker: There appear to be %d '
 ##     Killed
 ## so we reduced to batch_size=48 and nr_inference_workers=10.
-## Still got the same error with these settings on image:
+## Still got the same error with these settings on images:
 ##   fileid:   ff17467a-64d2-41eb-9a8c-ebf50aecf272
 ##   filename: TCGA-02-0010-01Z-00-DX2.5334831b-8e1f-4b61-bbf6-0f6e950a1b2f.svs
 ##   (799M)
+##   fileid:   203764ba-3d08-4ddc-80b2-76b63546f99b
+##   filename: TCGA-02-0034-01Z-00-DX1.aebc3ec5-2455-4aa1-b21a-ced8bdc6f3d8.svs
+##   (867M)
 ## so reducing to batch_size=40 and nr_inference_workers=9.
 
 cd ~

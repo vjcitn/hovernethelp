@@ -2,7 +2,7 @@
 #
 # Typical usage:
 #
-#     time hovernetstuff/infer_batch.sh 101:120
+#     time hovernetstuff/infer_batch.sh 101:120 >>infer_batch.log 2>&1 &
 #
 # or:
 #
@@ -114,8 +114,8 @@ fi
 ##
 ## so reducing 'nr_inference_workers' to 8.
 ##
-## This whole thing seems to be a limitation of the NVIDIA A100 GPU on the
-## JS2 instances.
+## This whole thing seems to be due to a lack of power (GPU? CPU? both?) or
+## memory (GPU memory? main memory? both?) of the JS2 g3.large instances.
 
 cd ~
 echo ""

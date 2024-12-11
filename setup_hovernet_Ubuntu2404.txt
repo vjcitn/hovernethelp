@@ -32,8 +32,8 @@ NOTES:
     to set the size of the root disk to at least 200 GB.
 
   - Looks like these g3.medium instances are not powerful enough
-    to run run_infer.py! E.g. on a big image like TCGA image
-    27021ae8-db7e-4245-9307-f3bdae43c4b3 (818M), run_infer.py always fail
+    to run run_infer.py! E.g. on a medium-size image like TCGA image
+    27021ae8-db7e-4245-9307-f3bdae43c4b3 (818M), run_infer.py fails
     after a couple of minutes with the following error:
 
       tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked
@@ -41,9 +41,14 @@ NOTES:
           warnings.warn('resource_tracker: There appear to be %d '
         Killed
 
-    Trying to reduce batch_size and nr_inference_workers to values as low as
-    8 and 7, respectively, wouldn't change anything.
+    Trying to reduce 'batch_size' and 'nr_inference_workers' to values
+    as low as 8 and 7, respectively, wouldn't change anything.
 
+  - g3.large instances seems to be able to process all TCGA images so
+    far granted that we don't use a 'nr_inference_workers' value > 8.
+    See infer_batch.sh for examples of TCGA images that trigger
+    the "leaked semaphore objects" errors when using a 'nr_inference_workers'
+    value > 8.
 
 SETUP
 -----
@@ -204,16 +209,20 @@ Populate input folder with WSIs from GDC
 
 Run run_infer.py
 
+    ## NOTE: 'nr_inference_workers' value very conservative on purpose.
+    ## This avoids running into nasty "leaked semaphore objects" errors
+    ## on JS2 g3.large instances. kakapo1 might be able to support higher
+    ## values. Still need to test this...
     cd ~
     conda activate hovernet
     time python ~/hover_net/run_infer.py \
         --nr_types=6 \
         --type_info_path=$HOME/hover_net/type_info.json \
-        --batch_size=64 \
+        --batch_size=48 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-        --nr_inference_workers=12 \
-        --nr_post_proc_workers=15 \
+        --nr_inference_workers=8 \
+        --nr_post_proc_workers=14 \
         wsi \
         --input_dir=$HOME/tcga_images/ \
         --output_dir=$HOME/infer_output/ \

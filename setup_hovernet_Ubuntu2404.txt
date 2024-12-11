@@ -7,13 +7,22 @@ Tested on the following systems:
 
 - kakapo1:
     DFCI server
-    NVIDIA L40S GPU (Ada Lovelace architecture)
+    NVIDIA L40S GPU
+      - Ada Lovelace architecture (successor of Ampere architecture)
+      - 18,176 CUDA cores
+      - 568 Tensor cores
+      - 142 RT Cores
+      - 48 GB with ECC
 
 - hovernet1, hovernet2, hovernet3, hovernet4:
     Jetstream2 instances, Ubuntu 24.04
     flavor: g3.large (16 CPUs, 60 GB RAM)
     root disk: 200 GB
-    NVIDIA A100 GPU (Ampere architecture)
+    NVIDIA A100 GPU:
+      - Ampere architecture
+      - 6,912 CUDA cores
+      - 432 Tensor cores
+      - 40 GB HBM2e ECC
     user: hovernet
     password: *******
 

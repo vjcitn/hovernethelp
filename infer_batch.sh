@@ -66,14 +66,18 @@ fi
 
 ## Run run_infer.py
 
-## Note: using batch_size=64 and nr_inference_workers=12 caused the following
-## error on the hovernet1-4 instances:
+## Note: using 'batch_size=64' and 'nr_inference_workers=12' caused the
+## following error on the hovernet1-4 instances for some images (I didn't
+## keep track which):
+##
 ##   tracker.py:254: UserWarning: resource_tracker: There appear to be 2
 ##     leaked semaphore objects to clean up at shutdown
 ##       warnings.warn('resource_tracker: There appear to be %d '
 ##     Killed
-## so we reduced to batch_size=48 and nr_inference_workers=10.
-## Still got the same error with these settings on images:
+##
+## so reducing 'batch_size' to 48 and 'nr_inference_workers' to 10.
+##
+## Hmm.. still getting the error on these images:
 ##
 ##   fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
 ##   filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
@@ -87,7 +91,31 @@ fi
 ##   filename: TCGA-02-0034-01Z-00-DX1.aebc3ec5-2455-4aa1-b21a-ced8bdc6f3d8.svs
 ##             (867M)
 ##
-## so reducing to batch_size=40 and nr_inference_workers=9.
+## so reducing 'nr_inference_workers' to 9.
+##
+## Bummer, these new setting made the trick for the above images but now got
+## the error on images:
+##
+##   fileid:   6486cbcf-5c7e-4a51-879c-df2dd5487524
+##   filename: TCGA-02-0001-01Z-00-DX3.2836ce55-491f-4d86-99b1-668946927af8.svs
+##             (763M)
+##
+##   fileid:   6aa4fc93-07e2-49f1-8738-7a51575a4564
+##   filename: TCGA-02-0010-01Z-00-DX3.33a67e8f-8bb6-498a-8c39-88b893c80b9e.svs
+##             (939M)
+##
+##   fileid:   2760bd76-6274-471f-b588-81df88e6cb01
+##   filename: TCGA-02-0025-01Z-00-DX1.bea1009d-61ab-48dc-a6ae-530761306d4c.svs
+##             (509M)
+##
+##   fileid:   9171a524-a8d1-48d4-83d9-cb7de0968646
+##   filename: TCGA-02-0034-01Z-00-DX2.f86120e8-3574-4a1d-a42b-248e86e2674f.svs
+##             (851M)
+##
+## so reducing 'nr_inference_workers' to 8.
+##
+## This whole thing seems to be a limitation of the NVIDIA A100 GPU on the
+## JS2 instances.
 
 cd ~
 echo ""
@@ -95,10 +123,10 @@ echo "RUN run_infer.py SCRIPT"
 python ~/hover_net/run_infer.py \
 	--nr_types=6 \
 	--type_info_path=$HOME/hover_net/type_info.json \
-	--batch_size=40 \
+	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=9 \
+	--nr_inference_workers=8 \
 	--nr_post_proc_workers=14 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \

@@ -46,6 +46,11 @@ Then test with:
 
 This must work on all nodes!
 
+Put the following line in the crontab on all nodes:
+
+    ## Push results to hoverboss every 15 min.
+    01,16,31,46 * * * * /usr/bin/rsync -azv /home/hovernet/infer_output hovernet@hoverboss:/media/volume/inferdata1/`hostname` >>/home/hovernet/rsync.log 2>&1
+
 Clone the following repos on hovernet1-4:
 
     # Ilaria's imageTCGA repo:
@@ -58,22 +63,26 @@ Run infer_batch.sh on each node:
 
     # On hovernet1:
     time hovernetstuff/infer_batch.sh 1:10
+    # (smallest/largest image: 194M/853M)
 
     # On hovernet2:
     time hovernetstuff/infer_batch.sh 11:20
+    # (smallest/largest image: 357M/2.0G)
 
     # On hovernet3:
     time hovernetstuff/infer_batch.sh 21:30
+    # (smallest/largest image: 190M/2.2G)
 
     # On hovernet4:
     time hovernetstuff/infer_batch.sh 31:40
+    # (smallest/largest image: 645M/3.4G)
 
 Note: image 40 is huge!
-  fileid: a36fac6a-0c70-4917-8f5f-0aa27c01c120
-  filename:  TCGA-02-0052-01Z-00-DX1.93BA650B-4E71-43D8-9974-16185F906EB8.svs
+  fileid:   a36fac6a-0c70-4917-8f5f-0aa27c01c120
+  filename: TCGA-02-0052-01Z-00-DX1.93BA650B-4E71-43D8-9974-16185F906EB8.svs
   --> 3424.6 MB!
 
-Will take hours to complete! (between 15 and 20 hours)
+Will take hours to complete! (between 15 and 25 hours)
 
 If that was successful then do it again with:
     41:60 on hovernet1

@@ -6,6 +6,7 @@
 set -e  # Exit immediately if a simple command exits with a non-zero status
 
 TCGA_DATA_URL="https://api.gdc.cancer.gov/data/"
+RSYNC_DEST_DIR="hovernet@hoverboss:/media/volume/inferdata1/$HOSTNAME"
 
 print_help()
 {
@@ -57,7 +58,7 @@ Rscript -e "$R_EXPR"
 ## so we reduced to batch_size=48 and nr_inference_workers=10.
 cd ~
 echo ""
-echo "RUN run_infer.py SCRIPT" 
+echo "RUN run_infer.py SCRIPT"
 python ~/hover_net/run_infer.py \
 	--nr_types=6 \
 	--type_info_path=$HOME/hover_net/type_info.json \
@@ -75,5 +76,5 @@ python ~/hover_net/run_infer.py \
 ## Transfer results to inferdata1 disk on hoverboss
 echo ""
 echo "Push results to hoverboss"
-rsync -azv ~/infer_output hovernet@hoverboss:/media/volume/inferdata1/$HOSTNAME
+rsync -azv ~/infer_output $RSYNC_DEST_DIR
 

@@ -155,6 +155,8 @@ Install R 4.4 (Ubuntu 24.04 only provides R 4.3)
     ln -s ../R-4.4.2/bin/R
     ln -s ../R-4.4.2/bin/Rscript
 
+Add R_DEFAULT_INTERNET_TIMEOUT=3600 to ~/.Renviron
+
 Install GenomicDataCommons package
 
     ## Needed by CRAN packages xml2 and openssl:

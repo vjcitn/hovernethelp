@@ -68,6 +68,11 @@ Run infer_batch.sh on each node:
     # On hovernet4:
     time hovernetstuff/infer_batch.sh 31:40
 
+Note: image 40 is huge!
+  fileid: a36fac6a-0c70-4917-8f5f-0aa27c01c120
+  filename:  TCGA-02-0052-01Z-00-DX1.93BA650B-4E71-43D8-9974-16185F906EB8.svs
+  --> 3424.6 MB!
+
 Will take hours to complete! (between 15 and 20 hours)
 
 If that was successful then do it again with:

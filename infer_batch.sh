@@ -36,12 +36,10 @@ if [ "$fromto" == "" ]; then
 fi
 
 if [ "$resume" != "" ]; then
-	if ["$resume" != "resume" ] || [ "$3" != "" ]; then
+	if [ "$resume" != "resume" ] || [ "$3" != "" ]; then
 		print_help
 	fi
-fi
-
-if [ "$resume" == "" ]; then
+else
 	## Purge output dir
 	cd ~/infer_output && rm -rf *
 

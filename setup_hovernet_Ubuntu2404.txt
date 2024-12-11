@@ -1,0 +1,226 @@
+===============================================================================
+Set up hovernet environment on an Ubuntu 24.04 system with an NVIDIA A100
+or L40S GPU
+-------------------------------------------------------------------------------
+
+Tested on the following systems:
+
+- kakapo1:
+    DFCI server
+    NVIDIA L40S GPU (Ada Lovelace architecture)
+
+- hovernet1, hovernet2, hovernet3, hovernet4:
+    Jetstream2 instances, Ubuntu 24.04
+    flavor: g3.large (16 CPUs, 60 GB RAM)
+    root disk: 200 GB
+    NVIDIA A100 GPU (Ampere architecture)
+    user: hovernet
+    password: *******
+
+NOTES:
+
+  - run_infer.py uses a lot of disk space for caching so make sure
+    to set the size of the root disk to at least 200 GB.
+
+  - Looks like these g3.medium instances are not powerful enough
+    to run run_infer.py! E.g. on a big image like TCGA image
+    27021ae8-db7e-4245-9307-f3bdae43c4b3 (818M), run_infer.py always fail
+    after a couple of minutes with the following error:
+
+      tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked
+        semaphore objects to clean up at shutdown
+          warnings.warn('resource_tracker: There appear to be %d '
+        Killed
+
+    Trying to reduce batch_size and nr_inference_workers to values as low as
+    8 and 7, respectively, wouldn't change anything.
+
+
+SETUP
+-----
+
+Only for convenience
+
+    sudo apt-get install tree
+
+Install NVIDIA drivers and CUDA Runtime Library
+
+    ## Check drivers compatibility with GPU:
+    nvidia-smi  # if incompatible then will print something like:
+                #   Failed to initialize NVML: Driver/library version mismatch
+                #   NVML library version: 550.120
+
+    ## Only if incompatible drivers:
+
+    ## On JS2 instance (NVIDIA A100 GPU):
+    sudo apt-get install nvidia-linux-grid-535  # CUDA 12.2
+
+    ## On kakapo1 (NVIDIA L40S GPU):
+    sudo apt-get install nvidia-driver-550  # CUDA 12.4
+    # or should we install nvidia-linux-grid-550?
+
+Needed by Python module openslide-python==1.4.1
+
+    sudo apt-get install libopenslide0
+
+Install and initialize miniconda
+
+    ## Install (based on https://docs.anaconda.com/miniconda/install/#quick-command-line-install)
+    mkdir ~/miniconda3
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    rm ~/miniconda3/miniconda.sh
+
+    ## Initialize conda and activate base environment
+    ~/miniconda3/bin/conda init
+
+    ## IMPORTANT: For changes to take effect, close and re-open current
+    ## shell. Or just:
+    source ~/.bashrc
+
+    ## Test:
+    which conda  # /home/hpages/miniconda3/bin/conda
+
+Create and activate hovernet environment
+
+    ## Create hovernet environment (based on
+    ## https://github.com/vqdang/hover_net?tab=readme-ov-file#set-up-environment):
+    git clone https://github.com/vqdang/hover_net
+    cd ~/hover_net
+
+    ## IMPORTANT: The HoVer-Net folks use torch 1.6.0 in the Set Up Environment
+    ## section of their README. Problem is, this version of torch does NOT work
+    ## with the NVIDIA A100 or L40S GPU! So we need to install the latest
+    ## torch instead: torch 2.5.1. However, this version of torch is not
+    ## compatible with Python 3.6.12, the version of Python used by the
+    ## original environment.yml.
+    ## So we modify environment.yml to use Python 3.12.3 as well a bunch of
+    ## modules with more recent versions than in the original environment.yml:
+    conda env create -f environment.yml  # use modified environment.yml!
+
+    ## Activate hovernet environment:
+    conda activate hovernet  # put this at the bottom of ~/.bashrc
+
+    ## Install **latest** torch and torchvision modules:
+    pip index versions torch        # list all torch versions
+    pip index versions torchvision  # list all torchvision versions
+    pip install torch==2.5.1 torchvision==0.20.1
+
+    ## From Python, check that torch is compatible with GPU:
+    import torch
+    print(torch.__version__)  # 2.5.1+cu124
+    print(torch.cuda.is_available())
+    torch.cuda.init()  # should return silently
+
+    ## Only if the above fails, then try to disable MIG with:
+    sudo nvidia-smi -mig 0
+    ## and reboot:
+    sudo reboot
+    ## See https://discuss.pytorch.org/t/cuda-driver-initialization-failed-you-might-not-have-a-cuda-gpu/191316/2 for the details
+    ## Note that MIG mode is only supported by GPUs based on NVIDIA Ampere
+    ## architecture like the NVIDIA A100 GPU.
+
+    ## Check run_infer.py's version:
+    python ~/hover_net/run_infer.py --version  # v1.0
+
+Download PanNuke dataset (145M) from Google Drive
+
+    mkdir ~/pretrained
+    cd ~/pretrained
+    pip install gdown
+    gdown 1SbSArI3KOOWHxRlxnjchO7_MbWzB4lNR
+    ls -lh hovernet_fast_pannuke_type_tf2pytorch.tar
+
+Install R 4.4 (Ubuntu 24.04 only provides R 4.3)
+
+    #sudo apt install r-base-core  # no! (will get R 4.3)
+
+    ## Not needed on JS2 instances (they already have this):
+    #sudo apt-get install build-essential gfortran libreadline-dev libx11-dev libxt-dev zlib1g-dev libbz2-dev liblzma-dev libpcre2-dev libcurl4-openssl-dev libpng-dev libjpeg-dev libtiff-dev libcairo2-dev libicu-dev
+
+    #sudo apt-get install firefox evince  # do we really need this?
+
+    mkdir ~/rdownloads
+    cd ~/rdownloads
+    wget https://cran.rstudio.com/src/base/R-4/R-4.4.2.tar.gz
+    tar zxvf R-4.4.2.tar.gz
+
+    mkdir ~/R-4.4.2
+    cd ~/R-4.4.2
+    ~/rdownloads/R-4.4.2/configure
+    make -j 12
+
+    mkdir ~/bin
+    cd ~/bin
+    ln -s ../R-4.4.2/bin/R
+    ln -s ../R-4.4.2/bin/Rscript
+
+Install GenomicDataCommons package
+
+    ## Needed by CRAN packages xml2 and openssl:
+    sudo apt-get install libxml2-dev libssl-dev
+
+    ~/bin/Rscript -e 'install.packages("BiocManager", repo="https://cran.rstudio.com"); BiocManager::install("GenomicDataCommons")'
+
+Create input/output folders
+
+    mkdir ~/tcga_images ~/infer_output
+
+Create image of the JS2 instance
+
+  The JS2 instance is now ready to be turned into an image for easy cloning
+  of other identical instances (modulo name and IP address).
+
+
+===============================================================================
+Running run_infer.py on TCGA images
+-------------------------------------------------------------------------------
+
+Populate input folder with WSIs from GDC
+
+    ## Use Ilaria's imageTCGA Shiny app to browse the TCGA Diagnostic Image
+    ## Database and get the file ids of the images to download.
+
+    ## Image 1/11765  (818M)
+    ~/bin/Rscript -e 'GenomicDataCommons::gdcdata("27021ae8-db7e-4245-9307-f3bdae43c4b3", progress=TRUE)'
+
+    ## Image 11765/11765  (232M)
+    ~/bin/Rscript -e 'GenomicDataCommons::gdcdata("d1c9c164-e47e-444a-aef2-7535a1a30b12", progress=TRUE)'
+
+    cd ~/tcga_images
+    #ln -s ~/.cache/GenomicDataCommons/27021ae8-db7e-4245-9307-f3bdae43c4b3/TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
+    ln -s ~/.cache/GenomicDataCommons/d1c9c164-e47e-444a-aef2-7535a1a30b12/TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs
+
+Run run_infer.py
+
+    cd ~
+    conda activate hovernet
+    time python ~/hover_net/run_infer.py \
+        --nr_types=6 \
+        --type_info_path=$HOME/hover_net/type_info.json \
+        --batch_size=64 \
+        --model_mode=fast \
+        --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
+        --nr_inference_workers=12 \
+        --nr_post_proc_workers=15 \
+        wsi \
+        --input_dir=$HOME/tcga_images/ \
+        --output_dir=$HOME/infer_output/ \
+        --save_thumb \
+        --save_mask
+
+Timings:
+  TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
+    machine    batch_size  infer workers       time
+    kakapo1            64             16  -->  109 min
+    kakapo1            64             32  -->  143 min
+    hovernet1          64             12  -->  106 min
+    hovernet3         128             16  -->  error (CUDA out of memory)
+    hovernet3          64             20  -->  126 min
+    hovernet4          64             16  -->  114 min
+  TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs
+    machine    batch_size  infer workers       time
+    kakapo1            64             16  -->  20 min
+    g3xl1              64             16  -->  24 min
+    hovernet1          64             16  -->  22 min
+

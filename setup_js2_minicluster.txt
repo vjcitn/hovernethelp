@@ -1,0 +1,92 @@
+===============================================================================
+Set up mini cluster on JS2
+-------------------------------------------------------------------------------
+
+Cluster: hovernet1-4 + hoverboss
+
+hoverboss:
+    Jetstream2 instances, Ubuntu 24.04
+    flavor: m3.quad (4 CPUs, 15 GB RAM)
+    root disk: 20 GB (default)
+    user: hovernet
+    password: *******
+
+    Attached volume:  inferdata1 (779 GB)
+
+Set up hoverboss
+----------------
+
+Only for convenience
+
+    sudo apt-get install tree
+
+Install R 4.4 as documented above
+
+In /media/volume/inferdata1/: create one subdir per cluster node (i.e.
+subdirs hovernet1-4). They must belong to the hovernet user. Make sure
+to create a new subfolder for each new node added to the cluster.
+
+Cluster setup
+-------------
+
+We must be able to rsync/ssh from each node to hoverboss. For this we
+add the following 'config' file to ~/.ssh on each node:
+
+    IdentityFile /home/hovernet/.ssh/id_rsa
+    UserKnownHostsFile /home/hovernet/.ssh/known_hosts
+    StrictHostKeyChecking no
+    
+    Host hoverboss
+        HostName 149.165.168.137
+
+Make sure to use hoverboss' actual IP address.
+Then test with:
+
+    ssh hoverboss
+
+This must work on all nodes!
+
+Clone the following repos on hovernet1-4:
+
+    # Ilaria's imageTCGA repo:
+    git clone https://github.com/billila/imageTCGA
+
+    # For the infer_batch.sh script (wrapper around run_infer.py):
+    git clone https://github.com/hpages/hovernetstuff
+
+Run infer_batch.sh on each node:
+
+    # On hovernet1:
+    time hovernetstuff/infer_batch.sh 1:10
+
+    # On hovernet2:
+    time hovernetstuff/infer_batch.sh 11:20
+
+    # On hovernet3:
+    time hovernetstuff/infer_batch.sh 21:30
+
+    # On hovernet4:
+    time hovernetstuff/infer_batch.sh 31:40
+
+Will take hours to complete! (between 15 and 20 hours)
+
+If that was successful then do it again with:
+    41:60 on hovernet1
+    61:80 on hovernet2
+    81:100 on hovernet3
+    101:120 on hovernet4
+
+If that was successful then do it again with:
+    121:140 on hovernet1
+    141:160 on hovernet2
+    161:180 on hovernet3
+    181:200 on hovernet4
+
+If that was successful then do it again with:
+    201:225 on hovernet1
+    226:250 on hovernet2
+    251:275 on hovernet3
+    276:300 on hovernet4
+
+Etc...
+

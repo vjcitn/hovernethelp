@@ -61,9 +61,6 @@ Clone the following repos on each worker:
     # Ilaria's imageTCGA repo:
     git clone https://github.com/billila/imageTCGA
 
-    # For the infer_batch.sh script (wrapper around run_infer.py):
-    git clone https://github.com/hpages/hovernethelp
-
 Run infer_batch.sh on each node:
 
     # On hovernet1:

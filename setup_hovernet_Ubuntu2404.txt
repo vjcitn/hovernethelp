@@ -14,7 +14,7 @@ Tested on the following systems:
       - 142 RT Cores
       - 48 GB with ECC
 
-- hovernet1, hovernet2, hovernet3, hovernet4:
+- hovernet1, hovernet2, hovernet3, hovernet4, hovernet5:
     Jetstream2 instances, Ubuntu 24.04
     flavor: g3.large (16 CPUs, 60 GB RAM)
     root disk: 200 GB
@@ -58,6 +58,9 @@ NOTES:
 SETUP
 -----
 
+All sudo commands from the exouser account.
+All other commands from the hovernet account.
+
 Only for convenience
 
     sudo apt-get install tree
@@ -69,12 +72,12 @@ Install NVIDIA drivers and CUDA Runtime Library
                 #   Failed to initialize NVML: Driver/library version mismatch
                 #   NVML library version: 550.120
 
-    ## Only if incompatible drivers:
+    ## Only if **incompatible** drivers:
 
-    ## On JS2 instance (NVIDIA A100 GPU):
+    ## --- on JS2 instance (NVIDIA A100 GPU), try:
     sudo apt-get install nvidia-linux-grid-535  # CUDA 12.2
 
-    ## On kakapo1 (NVIDIA L40S GPU):
+    ## --- on kakapo1 (NVIDIA L40S GPU):
     sudo apt-get install nvidia-driver-550  # CUDA 12.4
     # or should we install nvidia-linux-grid-550?
 
@@ -100,10 +103,16 @@ Install and initialize miniconda
     ## Test:
     which conda  # /home/hovernet/miniconda3/bin/conda
 
+For the modified environment.yml file that we'll use below
+
+    cd ~
+    git clone https://github.com/hpages/hovernethelp
+
 Create and activate hovernet environment
 
-    ## Create hovernet environment (based on
+    ## Create hovernet environment (based on doc at
     ## https://github.com/vqdang/hover_net?tab=readme-ov-file#set-up-environment):
+    cd ~
     git clone https://github.com/vqdang/hover_net
     cd ~/hover_net
 
@@ -113,8 +122,11 @@ Create and activate hovernet environment
     ## torch instead: torch 2.5.1. However, this version of torch is not
     ## compatible with Python 3.6.12, the version of Python used by the
     ## original environment.yml.
-    ## So we modify environment.yml to use Python 3.12.3 as well a bunch of
-    ## modules with more recent versions than in the original environment.yml:
+    ## So we use a modified environment.yml that uses Python 3.12.3 as well
+    ## a bunch of modules with more recent versions than in the original
+    ## environment.yml:
+    cp ~/hovernethelp/environment.yml .
+    git diff
     conda env create -f environment.yml  # USE MODIFIED environment.yml!
 
     ## Activate hovernet environment:
@@ -154,7 +166,7 @@ Install R 4.4 (Ubuntu 24.04 only provides R 4.3)
 
     #sudo apt install r-base-core  # no! (will get R 4.3)
 
-    ## Not needed on JS2 instances (they already have this):
+    ## Not needed on JS2 instances (they already have all this):
     #sudo apt-get install build-essential gfortran libreadline-dev libx11-dev libxt-dev zlib1g-dev libbz2-dev liblzma-dev libpcre2-dev libcurl4-openssl-dev libpng-dev libjpeg-dev libtiff-dev libcairo2-dev libicu-dev
 
     #sudo apt-get install firefox evince  # do we really need this?

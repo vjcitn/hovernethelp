@@ -153,7 +153,7 @@ fi
 ##
 ## so reducing 'nr_inference_workers' to 6.
 ##
-## Again, this new setting made the trick for the above image but now got
+## Again, this new setting made the trick for the above images but now got
 ## the error on images:
 ##
 ##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
@@ -169,6 +169,20 @@ fi
 ##             (821M, 56002x38719)
 ##
 ## so reducing 'nr_inference_workers' to 5.
+##
+## Again, this new setting made the trick for the above image but now got
+## the error on image:
+##
+##   fileid:   97263433-36d7-46c6-80f2-6d61c5cdcbe8
+##   filename: TCGA-06-0137-01Z-00-DX7.c0c25c01-8602-47a5-8d52-cb323c3432d2.svs
+##             (778M, 48002x32912)
+##
+## However I'm hesitant to set 'nr_inference_workers=4' in the call to
+## run_infer.py below because I'm not sure how this would impact performance.
+## Interestingly, and to my surprise, decreasing the value
+## of 'nr_inference_workers' from 12 to 6 didn't seem to have have any
+## significant impact on performance but I'm not sure about going as low as 4.
+## So only changing the value to 4 locally on hovernet3 for now...
 ##
 ## This whole thing seems to be due to a lack of power (GPU? CPU? both?) or
 ## memory (GPU memory? main memory? both?) of the JS2 g3.large instances.

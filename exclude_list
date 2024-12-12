@@ -1,3 +1,7 @@
+# KeyError error (see infer_batch.sh for the details):
 TCGA-05-4384-01Z-00-DX1.CA68BF29-BBE3-4C8E-B48B-554431A9EE13.svs
 TCGA-05-4390-01Z-00-DX1.858E64DF-DD3E-4F43-B7C1-CE35B33F1C90.svs
+
+# "leaked semaphore objects" error on JS2 g3.large instances, even
+# with 'nr_inference_workers=1' (see infer_batch.sh for the details):
 TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs

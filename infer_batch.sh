@@ -126,11 +126,15 @@ fi
 ## so reducing 'nr_inference_workers' to 7.
 ##
 ## Again, this new setting made the trick for the above image but now got
-## the error on image:
+## the error on images:
 ##
 ##   fileid:   f7cdd06d-8d92-4889-8fd0-717c7db32ff4
 ##   filename: TCGA-02-0026-01Z-00-DX1.d8f3085f-e418-47da-86bc-20db44ac6efd.svs
 ##             (966M)
+##
+##   fileid:   ac51c752-2fa1-4923-a443-6ca84adb8c2a
+##   filename: TCGA-02-0014-01Z-00-DX1.b7fd5196-fc51-4dc7-aa6d-e74e1e9ee71d.svs
+##             (357M)
 ##
 ## so reducing 'nr_inference_workers' to 6.
 ##

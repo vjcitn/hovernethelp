@@ -28,27 +28,32 @@ Tested on the following systems:
 
 NOTES:
 
-  - run_infer.py uses a lot of disk space for caching so make sure
-    to set the size of the root disk to at least 200 GB.
+- run_infer.py uses a lot of disk space for caching so make sure
+  to set the size of the root disk to at least 200 GB.
 
-  - Looks like these g3.medium instances are not powerful enough
-    to run run_infer.py! E.g. on a medium-size image like TCGA image
-    27021ae8-db7e-4245-9307-f3bdae43c4b3 (818M), run_infer.py fails
-    after a couple of minutes with the following error:
+- Looks like these g3.medium instances are not powerful enough
+  to run run_infer.py on most TCGA images! E.g. on medium-size image:
 
-      tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked
-        semaphore objects to clean up at shutdown
-          warnings.warn('resource_tracker: There appear to be %d '
-        Killed
+    fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
+    filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
+              (818M)
 
-    Trying to reduce 'batch_size' and 'nr_inference_workers' to values
-    as low as 8 and 7, respectively, wouldn't change anything.
+  the script fails after a couple of minutes with the following error:
 
-  - g3.large instances seems to be able to process all TCGA images so
-    far granted that we don't use a 'nr_inference_workers' value > 7.
-    See infer_batch.sh for an example of a TCGA image that triggers
-    the "leaked semaphore objects" errors when using a 'nr_inference_workers'
-    value of 8.
+    tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked
+      semaphore objects to clean up at shutdown
+        warnings.warn('resource_tracker: There appear to be %d '
+      Killed
+
+  Trying to reduce 'batch_size' and 'nr_inference_workers' to values
+  as low as 8 and 7, respectively, wouldn't change anything.
+
+- g3.large instances can process 27021ae8-db7e-4245-9307-f3bdae43c4b3
+  (with 'nr_inference_workers=12') and seem to be capable of processing
+  all TCGA images (so far) granted that we don't use a 'nr_inference_workers'
+  value > 6. See infer_batch.sh for an example of a TCGA image that triggers
+  the "leaked semaphore objects" error when using a 'nr_inference_workers'
+  value of 7.
 
 SETUP
 -----
@@ -212,7 +217,7 @@ Run run_infer.py
     ## NOTE: 'nr_inference_workers' value very conservative on purpose.
     ## This avoids running into nasty "leaked semaphore objects" errors
     ## on JS2 g3.large instances. kakapo1 might be able to support higher
-    ## values. Still need to test this...
+    ## values (e.g. 12) but I still need to confirm this...
     cd ~
     conda activate hovernet
     time python ~/hover_net/run_infer.py \
@@ -221,8 +226,8 @@ Run run_infer.py
         --batch_size=48 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-        --nr_inference_workers=7 \
-        --nr_post_proc_workers=14 \
+        --nr_inference_workers=6 \
+        --nr_post_proc_workers=12 \
         wsi \
         --input_dir=$HOME/tcga_images/ \
         --output_dir=$HOME/infer_output/ \
@@ -230,7 +235,7 @@ Run run_infer.py
         --save_mask
 
 Timings:
-  TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
+  TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs (818M)
     machine    batch_size  infer workers       time
     kakapo1            64             16  -->  109 min
     kakapo1            64             32  -->  143 min
@@ -238,7 +243,7 @@ Timings:
     hovernet3         128             16  -->  error (CUDA out of memory)
     hovernet3          64             20  -->  126 min
     hovernet4          64             16  -->  114 min
-  TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs
+  TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
     machine    batch_size  infer workers       time
     kakapo1            64             16  -->  20 min
     g3xl1              64             16  -->  24 min

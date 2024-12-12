@@ -2,7 +2,12 @@
 Set up mini cluster on JS2
 -------------------------------------------------------------------------------
 
-Cluster: hovernet1-4 + hoverboss
+Cluster: 5 workers (hovernet1-4 + kakapo1)
+         + hoverboss (centralize results)
+
+All nodes are JS2 instances except kakapo1 that is a physical server at DFCI.
+
+See setup_hovernet_Ubuntu2404.txt for how to set up the 5 workers.
 
 hoverboss:
     Jetstream2 instances, Ubuntu 24.04
@@ -22,9 +27,9 @@ Only for convenience
 
 Install R 4.4 as documented above
 
-In /media/volume/inferdata1/: create one subdir per cluster node (i.e.
-subdirs hovernet1-4). They must belong to the hovernet user. Make sure
-to create a new subfolder for each new node added to the cluster.
+In /media/volume/inferdata1/: create one subdir per worker (i.e.
+subdirs hovernet1-4 + kakapo1). They must belong to the hovernet user.
+Make sure to create a new subfolder for each new node added to the cluster.
 
 Cluster setup
 -------------
@@ -51,7 +56,7 @@ Put the following line in the crontab on all nodes:
     ## Push results to hoverboss every 15 min.
     01,16,31,46 * * * * /usr/bin/rsync -azv /home/hovernet/infer_output hovernet@hoverboss:/media/volume/inferdata1/`hostname` >>/home/hovernet/rsync.log 2>&1
 
-Clone the following repos on hovernet1-4:
+Clone the following repos on each worker:
 
     # Ilaria's imageTCGA repo:
     git clone https://github.com/billila/imageTCGA
@@ -62,20 +67,23 @@ Clone the following repos on hovernet1-4:
 Run infer_batch.sh on each node:
 
     # On hovernet1:
-    time hovernetstuff/infer_batch.sh 1:10
+    time hovernetstuff/infer_batch.sh 1:10 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 194M/853M)
 
     # On hovernet2:
-    time hovernetstuff/infer_batch.sh 11:20
+    time hovernetstuff/infer_batch.sh 11:20 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 357M/2.0G)
 
     # On hovernet3:
-    time hovernetstuff/infer_batch.sh 21:30
+    time hovernetstuff/infer_batch.sh 21:30 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 190M/2.2G)
 
     # On hovernet4:
-    time hovernetstuff/infer_batch.sh 31:40
+    time hovernetstuff/infer_batch.sh 31:40 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 645M/3.4G)
+
+    # On kakapo1:
+    time hovernetstuff/infer_batch.sh 41:50 >>infer_batch.log 2>&1 &
 
 Note: image 40 is huge!
   fileid:   a36fac6a-0c70-4917-8f5f-0aa27c01c120
@@ -85,22 +93,25 @@ Note: image 40 is huge!
 Will take hours to complete! (between 15 and 25 hours)
 
 If that was successful then do it again with:
-    41:60 on hovernet1
-    61:80 on hovernet2
-    81:100 on hovernet3
-    101:120 on hovernet4
+    51:60 on hovernet1
+    61:70 on hovernet2
+    71:80 on hovernet3
+    81:90 on hovernet4
+    91:100 on kakapo1
 
 If that was successful then do it again with:
-    121:140 on hovernet1
-    141:160 on hovernet2
-    161:180 on hovernet3
-    181:200 on hovernet4
+    101:120 on hovernet1
+    121:140 on hovernet2
+    141:160 on hovernet3
+    161:180 on hovernet4
+    181:200 on kakapo1
 
 If that was successful then do it again with:
-    201:225 on hovernet1
-    226:250 on hovernet2
-    251:275 on hovernet3
-    276:300 on hovernet4
+    201:220 on hovernet1
+    221:240 on hovernet2
+    241:260 on hovernet3
+    261:280 on hovernet4
+    281:300 on kakapo1
 
-Etc...
+etc...
 

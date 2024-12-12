@@ -6,7 +6,7 @@ or L40S GPU
 Tested on the following systems:
 
 - kakapo1:
-    DFCI server
+    DFCI server, Ubuntu 24.04
     NVIDIA L40S GPU
       - Ada Lovelace architecture (successor of Ampere architecture)
       - 18,176 CUDA cores
@@ -93,7 +93,7 @@ Install and initialize miniconda
     source ~/.bashrc
 
     ## Test:
-    which conda  # /home/hpages/miniconda3/bin/conda
+    which conda  # /home/hovernet/miniconda3/bin/conda
 
 Create and activate hovernet environment
 
@@ -110,7 +110,7 @@ Create and activate hovernet environment
     ## original environment.yml.
     ## So we modify environment.yml to use Python 3.12.3 as well a bunch of
     ## modules with more recent versions than in the original environment.yml:
-    conda env create -f environment.yml  # use modified environment.yml!
+    conda env create -f environment.yml  # USE MODIFIED environment.yml!
 
     ## Activate hovernet environment:
     conda activate hovernet  # put this at the bottom of ~/.bashrc

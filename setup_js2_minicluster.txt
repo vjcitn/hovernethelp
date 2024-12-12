@@ -10,7 +10,7 @@ All nodes are JS2 instances except kakapo1 that is a physical server at DFCI.
 See setup_hovernet_Ubuntu2404.txt for how to set up the 5 workers.
 
 hoverboss:
-    Jetstream2 instances, Ubuntu 24.04
+    Jetstream2 instance, Ubuntu 24.04
     flavor: m3.quad (4 CPUs, 15 GB RAM)
     root disk: 20 GB (default)
     user: hovernet

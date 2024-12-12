@@ -96,8 +96,7 @@ Install and initialize miniconda
     ## Initialize conda and activate base environment
     ~/miniconda3/bin/conda init
 
-    ## IMPORTANT: For changes to take effect, close and re-open current
-    ## shell. Or just:
+    ## IMPORTANT: Logout/login for changes to take effect. Or just:
     source ~/.bashrc
 
     ## Test:
@@ -140,10 +139,10 @@ Create and activate hovernet environment
     ## From Python, check that torch is compatible with GPU:
     import torch
     print(torch.__version__)  # 2.5.1+cu124
-    print(torch.cuda.is_available())
+    print(torch.cuda.is_available())  # True
     torch.cuda.init()  # should return silently
 
-    ## Only if the above fails, then try to disable MIG with:
+    ## [UNCONFIRMED] Only if the above fails, then try to disable MIG with:
     sudo nvidia-smi -mig 0
     ## and reboot:
     sudo reboot
@@ -186,6 +185,10 @@ Install R 4.4 (Ubuntu 24.04 only provides R 4.3)
     ln -s ../R-4.4.2/bin/R
     ln -s ../R-4.4.2/bin/Rscript
 
+    ## IMPORTANT: Logout/login to get ~/bin persistently added to the PATH.
+    ## Or just:
+    source ~/.profile
+
 Add R_DEFAULT_INTERNET_TIMEOUT=3600 to ~/.Renviron
 
 Install GenomicDataCommons package
@@ -193,36 +196,41 @@ Install GenomicDataCommons package
     ## Needed by CRAN packages xml2 and openssl:
     sudo apt-get install libxml2-dev libssl-dev
 
-    ~/bin/Rscript -e 'install.packages("BiocManager", repo="https://cran.rstudio.com"); BiocManager::install("GenomicDataCommons")'
+    Rscript -e 'install.packages("BiocManager", repo="https://cran.rstudio.com"); BiocManager::install("GenomicDataCommons")'
+
+Download 2 WSI images from the TCGA Diagnostic Image Database that we'll
+use for testing purposes
+
+    ## Use Ilaria's imageTCGA Shiny app to browse the TCGA Diagnostic Image
+    ## Database and get the file ids of the WSI images to download.
+    ## Here we download the very first and very last images in the DB.
+    ## We'll use them later to perform some testing:
+
+    ## Image 1/11765  (818M, medium-size)
+    Rscript -e 'GenomicDataCommons::gdcdata("27021ae8-db7e-4245-9307-f3bdae43c4b3", progress=TRUE)'
+
+    ## Image 11765/11765  (232M, small)
+    Rscript -e 'GenomicDataCommons::gdcdata("d1c9c164-e47e-444a-aef2-7535a1a30b12", progress=TRUE)'
 
 Create input/output folders
 
     mkdir ~/tcga_images ~/infer_output
 
-Create image of the JS2 instance
+[OPTIONAL] Create image of the JS2 instance
 
   The JS2 instance is now ready to be turned into an image for easy cloning
   of other identical instances (modulo name and IP address).
 
 
 ===============================================================================
-Running run_infer.py on TCGA images
+Test run_infer.py
 -------------------------------------------------------------------------------
 
-Populate input folder with WSIs from GDC
-
-    ## Use Ilaria's imageTCGA Shiny app to browse the TCGA Diagnostic Image
-    ## Database and get the file ids of the images to download.
-
-    ## Image 1/11765  (818M)
-    ~/bin/Rscript -e 'GenomicDataCommons::gdcdata("27021ae8-db7e-4245-9307-f3bdae43c4b3", progress=TRUE)'
-
-    ## Image 11765/11765  (232M)
-    ~/bin/Rscript -e 'GenomicDataCommons::gdcdata("d1c9c164-e47e-444a-aef2-7535a1a30b12", progress=TRUE)'
+Populate input folder with the WSI images obtained with GenomicDataCommons
 
     cd ~/tcga_images
-    #ln -s ~/.cache/GenomicDataCommons/27021ae8-db7e-4245-9307-f3bdae43c4b3/TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
-    ln -s ~/.cache/GenomicDataCommons/d1c9c164-e47e-444a-aef2-7535a1a30b12/TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs
+    ln -s ~/.cache/GenomicDataCommons/27021ae8-db7e-4245-9307-f3bdae43c4b3/TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
+    #ln -s ~/.cache/GenomicDataCommons/d1c9c164-e47e-444a-aef2-7535a1a30b12/TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs
 
 Run run_infer.py
 
@@ -255,6 +263,7 @@ Timings:
     hovernet3         128             16  -->  error (CUDA out of memory)
     hovernet3          64             20  -->  126 min
     hovernet4          64             16  -->  114 min
+    hovernet5          48              6  -->  106 min
   TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
     machine    batch_size  infer workers       time
     kakapo1            64             16  -->  20 min

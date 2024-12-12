@@ -2,11 +2,11 @@
 #
 # Typical usage:
 #
-#     time hovernethelp/infer_batch.sh 101:120 >>infer_batch.log 2>&1 &
+#     time hovernethelp/infer_batch.sh '101:120' >>infer_batch.log 2>&1 &
 #
 # or:
 #
-#     time hovernethelp/infer_batch.sh 101:120 resume
+#     time hovernethelp/infer_batch.sh '101:120' resume
 
 set -e  # Exit immediately if a simple command exits with a non-zero status
 
@@ -18,12 +18,14 @@ print_help()
 	cat <<-EOD
 	Usage:
 	
-	    $0 <from>:<to>
+	    $0 '<from>:<to>'
 	or
-	    $0 <from>:<to> resume
+	    $0 '<from>:<to>' resume
 	
-	where <from> and <to> are row numbers in imageTCGA's big
-	data.frame (11765 rows)
+	where <from> and <to> are row numbers from imageTCGA's big
+	data.frame (11765 rows) e.g. '101:120'.
+	Note that any valid R expression can be used instead of '<from>:<to>'
+	as long as it's quoted e.g. 'c(101:120, 77, 160:165)'.
 	EOD
 	exit 1
 }

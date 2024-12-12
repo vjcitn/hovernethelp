@@ -62,7 +62,7 @@ else
 	R_EXPR="$R_EXPR     download.file(url, destfile);"
 	R_EXPR="$R_EXPR     cat('--> saved as ', destfile, '\n\n', sep='')"
 	R_EXPR="$R_EXPR };"
-	R_EXPR="$R_EXPR cat('DONE\n')"
+	R_EXPR="$R_EXPR cat('DONE DOWNLOADING FILES\n')"
 	Rscript -e "$R_EXPR"
 fi
 
@@ -143,7 +143,8 @@ fi
 
 cd ~
 echo ""
-echo "RUN run_infer.py SCRIPT"
+echo "RUNNING run_infer.py SCRIPT ... [`date`]"
+echo ""
 python ~/hover_net/run_infer.py \
 	--nr_types=6 \
 	--type_info_path=$HOME/hover_net/type_info.json \
@@ -158,8 +159,14 @@ python ~/hover_net/run_infer.py \
 	--save_thumb \
 	--save_mask
 
-## Transfer results to inferdata1 disk on hoverboss
 echo ""
-echo "Push results to hoverboss"
+echo "DONE RUNNING run_infer.py SCRIPT [`date`]."
+echo ""
+
+## Push batch results to inferdata1 disk on hoverboss
+echo ""
+echo "PUSHHING BATCH RESULTS TO hoverboss ..."
 rsync -azv ~/infer_output $RSYNC_DEST_DIR
+echo ""
+echo "DONE PUSHHING BATCH RESULTS TO hoverboss."
 

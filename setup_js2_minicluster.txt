@@ -64,23 +64,23 @@ Clone the following repos on each worker:
 Run infer_batch.sh on each node:
 
     # On hovernet1:
-    time hovernethelp/infer_batch.sh 1:10 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh '1:10' >>infer_batch.log 2>&1 &
     # (smallest/largest image: 194M/853M)
 
     # On hovernet2:
-    time hovernethelp/infer_batch.sh 11:20 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh '11:20' >>infer_batch.log 2>&1 &
     # (smallest/largest image: 357M/2.0G)
 
     # On hovernet3:
-    time hovernethelp/infer_batch.sh 21:30 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh '21:30' >>infer_batch.log 2>&1 &
     # (smallest/largest image: 190M/2.2G)
 
     # On hovernet4:
-    time hovernethelp/infer_batch.sh 31:40 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh '31:40' >>infer_batch.log 2>&1 &
     # (smallest/largest image: 645M/3.4G)
 
     # On kakapo1:
-    time hovernethelp/infer_batch.sh 41:50 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh '41:50' >>infer_batch.log 2>&1 &
 
 Note: image 40 is huge!
   fileid:   a36fac6a-0c70-4917-8f5f-0aa27c01c120
@@ -90,25 +90,18 @@ Note: image 40 is huge!
 Will take hours to complete! (between 15 and 25 hours)
 
 If that was successful then do it again with:
-    51:60 on hovernet1
-    61:70 on hovernet2
-    71:80 on hovernet3
-    81:90 on hovernet4
-    91:100 on kakapo1
+     51:100 on hovernet1  (started on 2024-12-12 at 7:09 am PST)  174M/2.8G
+    101:150 on hovernet2  (started on 2024-12-12 at 7:05 am PST)  6.1M/695M
+    151:200 on hovernet3  (started on 2024-12-12 at 6:45 am PST)   22M/911M
+    201:250 on hovernet4
+    251:300 on kakapo1    (started on 2024-12-12 at 6:50 am PST)   16M/1.5G
 
 If that was successful then do it again with:
-    101:120 on hovernet1
-    121:140 on hovernet2
-    141:160 on hovernet3
-    161:180 on hovernet4
-    181:200 on kakapo1
-
-If that was successful then do it again with:
-    201:220 on hovernet1
-    221:240 on hovernet2
-    241:260 on hovernet3
-    261:280 on hovernet4
-    281:300 on kakapo1
+    301:350 on hovernet1
+    351:400 on hovernet2
+    401:450 on hovernet3
+    451:500 on hovernet4
+    501:550 on kakapo1
 
 etc...
 

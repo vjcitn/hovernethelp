@@ -87,11 +87,11 @@ fi
 ##
 ##   fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
 ##   filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
-##             (818M)
+##             (818M, 54002x41831)
 ##
 ##   fileid:   ff17467a-64d2-41eb-9a8c-ebf50aecf272
 ##   filename: TCGA-02-0010-01Z-00-DX2.5334831b-8e1f-4b61-bbf6-0f6e950a1b2f.svs
-##             (799M)
+##             (799M, 54002x40857)
 ##
 ##   fileid:   203764ba-3d08-4ddc-80b2-76b63546f99b
 ##   filename: TCGA-02-0034-01Z-00-DX1.aebc3ec5-2455-4aa1-b21a-ced8bdc6f3d8.svs
@@ -112,7 +112,7 @@ fi
 ##
 ##   fileid:   2760bd76-6274-471f-b588-81df88e6cb01
 ##   filename: TCGA-02-0025-01Z-00-DX1.bea1009d-61ab-48dc-a6ae-530761306d4c.svs
-##             (509M)
+##             (509M, 42001x38551)
 ##
 ##   fileid:   9171a524-a8d1-48d4-83d9-cb7de0968646
 ##   filename: TCGA-02-0034-01Z-00-DX2.f86120e8-3574-4a1d-a42b-248e86e2674f.svs
@@ -134,13 +134,26 @@ fi
 ##
 ##   fileid:   f7cdd06d-8d92-4889-8fd0-717c7db32ff4
 ##   filename: TCGA-02-0026-01Z-00-DX1.d8f3085f-e418-47da-86bc-20db44ac6efd.svs
-##             (966M)
+##             (966M, 46002x33898 pixels)
 ##
 ##   fileid:   ac51c752-2fa1-4923-a443-6ca84adb8c2a
 ##   filename: TCGA-02-0014-01Z-00-DX1.b7fd5196-fc51-4dc7-aa6d-e74e1e9ee71d.svs
-##             (357M)
+##             (357M, 77695x20687 pixels)
 ##
 ## so reducing 'nr_inference_workers' to 6.
+##
+## Again, this new setting made the trick for the above image but now got
+## the error on images:
+##
+##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
+##   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
+##             (444M, 83968x56576 = 4.75 billion pixels!)
+##
+##   fileid:   fdffd302-f1ef-466c-8f71-ea6776ef5165
+##   filename: TCGA-06-0137-01Z-00-DX5.0f06ca27-54e2-490a-8afb-a19600e60619.svs
+##             (821M, 56002x38719)
+##
+## so reducing 'nr_inference_workers' to 5.
 ##
 ## This whole thing seems to be due to a lack of power (GPU? CPU? both?) or
 ## memory (GPU memory? main memory? both?) of the JS2 g3.large instances.
@@ -155,7 +168,7 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=6 \
+	--nr_inference_workers=5 \
 	--nr_post_proc_workers=12 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \

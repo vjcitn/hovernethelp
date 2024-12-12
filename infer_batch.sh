@@ -114,6 +114,15 @@ fi
 ##
 ## so reducing 'nr_inference_workers' to 8.
 ##
+## Argh!!.. this new setting made the trick for the above images but now got
+## the error on image:
+##
+##   fileid:   190b8413-f21e-4451-89cf-10ca505fb8db
+##   filename: TCGA-02-0025-01Z-00-DX2.aa8923a0-2930-47f4-bbff-ceb080fafc9e.svs
+##             (1.2G)
+##
+## so reducing 'nr_inference_workers' to 7.
+##
 ## This whole thing seems to be due to a lack of power (GPU? CPU? both?) or
 ## memory (GPU memory? main memory? both?) of the JS2 g3.large instances.
 
@@ -126,7 +135,7 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=8 \
+	--nr_inference_workers=7 \
 	--nr_post_proc_workers=14 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \

@@ -45,10 +45,10 @@ NOTES:
     as low as 8 and 7, respectively, wouldn't change anything.
 
   - g3.large instances seems to be able to process all TCGA images so
-    far granted that we don't use a 'nr_inference_workers' value > 8.
-    See infer_batch.sh for examples of TCGA images that trigger
+    far granted that we don't use a 'nr_inference_workers' value > 7.
+    See infer_batch.sh for an example of a TCGA image that triggers
     the "leaked semaphore objects" errors when using a 'nr_inference_workers'
-    value > 8.
+    value of 8.
 
 SETUP
 -----
@@ -221,7 +221,7 @@ Run run_infer.py
         --batch_size=48 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-        --nr_inference_workers=8 \
+        --nr_inference_workers=7 \
         --nr_post_proc_workers=14 \
         wsi \
         --input_dir=$HOME/tcga_images/ \

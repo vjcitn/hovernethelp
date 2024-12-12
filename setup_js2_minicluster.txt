@@ -62,28 +62,28 @@ Clone the following repos on each worker:
     git clone https://github.com/billila/imageTCGA
 
     # For the infer_batch.sh script (wrapper around run_infer.py):
-    git clone https://github.com/hpages/hovernetstuff
+    git clone https://github.com/hpages/hovernethelp
 
 Run infer_batch.sh on each node:
 
     # On hovernet1:
-    time hovernetstuff/infer_batch.sh 1:10 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh 1:10 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 194M/853M)
 
     # On hovernet2:
-    time hovernetstuff/infer_batch.sh 11:20 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh 11:20 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 357M/2.0G)
 
     # On hovernet3:
-    time hovernetstuff/infer_batch.sh 21:30 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh 21:30 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 190M/2.2G)
 
     # On hovernet4:
-    time hovernetstuff/infer_batch.sh 31:40 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh 31:40 >>infer_batch.log 2>&1 &
     # (smallest/largest image: 645M/3.4G)
 
     # On kakapo1:
-    time hovernetstuff/infer_batch.sh 41:50 >>infer_batch.log 2>&1 &
+    time hovernethelp/infer_batch.sh 41:50 >>infer_batch.log 2>&1 &
 
 Note: image 40 is huge!
   fileid:   a36fac6a-0c70-4917-8f5f-0aa27c01c120

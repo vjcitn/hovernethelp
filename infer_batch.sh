@@ -2,11 +2,11 @@
 #
 # Typical usage:
 #
-#     time hovernetstuff/infer_batch.sh 101:120 >>infer_batch.log 2>&1 &
+#     time hovernethelp/infer_batch.sh 101:120 >>infer_batch.log 2>&1 &
 #
 # or:
 #
-#     time hovernetstuff/infer_batch.sh 101:120 resume
+#     time hovernethelp/infer_batch.sh 101:120 resume
 
 set -e  # Exit immediately if a simple command exits with a non-zero status
 

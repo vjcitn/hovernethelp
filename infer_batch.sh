@@ -51,20 +51,32 @@ else
 	## Download TCGA images
 	R_EXPR="suppressMessages(library(GenomicDataCommons));"
 	R_EXPR="$R_EXPR load('~/imageTCGA/R/sysdata.rda');"
-	R_EXPR="$R_EXPR db2 <- db[$fromto, , drop=FALSE];"
+	R_EXPR="$R_EXPR db2 <- db[$fromto, c('File.ID', 'File.Name')];"
 	R_EXPR="$R_EXPR file_ids <- db2[ , 'File.ID'];"
 	R_EXPR="$R_EXPR file_names <- db2[ , 'File.Name'];"
+	R_EXPR="$R_EXPR exclude_list <- readLines('~/hovernethelp/exclude_list');"
+	R_EXPR="$R_EXPR exclude_idx <- which(file_names %in% exclude_list);"
+	R_EXPR="$R_EXPR if (length(exclude_idx) != 0L) {"
+	R_EXPR="$R_EXPR   excluded_file_ids <- file_ids[exclude_idx];"
+	R_EXPR="$R_EXPR   excluded_file_names <- file_names[exclude_idx];"
+	R_EXPR="$R_EXPR   cat('\n', length(exclude_idx), ' FILES EXCLUDED:\n', sep='');"
+	R_EXPR="$R_EXPR   IDs <- paste0('ID:   ', excluded_file_ids);"
+	R_EXPR="$R_EXPR   Names <- paste0('Name: ', excluded_file_names);"
+	R_EXPR="$R_EXPR   cat(sprintf('%3d. %s\n     %s', seq_along(IDs), IDs, Names), sep='\n');"
+	R_EXPR="$R_EXPR   file_ids <- file_ids[-exclude_idx];"
+	R_EXPR="$R_EXPR   file_names <- file_names[-exclude_idx];"
+	R_EXPR="$R_EXPR };"
 	R_EXPR="$R_EXPR cat('\n', length(file_ids), ' FILES TO DOWNLOAD:\n', sep='');"
 	R_EXPR="$R_EXPR IDs <- paste0('ID:   ', file_ids);"
 	R_EXPR="$R_EXPR Names <- paste0('Name: ', file_names);"
 	R_EXPR="$R_EXPR cat(sprintf('%3d. %s\n     %s', seq_along(IDs), IDs, Names), sep='\n');"
 	R_EXPR="$R_EXPR cat('\n');"
 	R_EXPR="$R_EXPR for (i in seq_along(file_ids)) {"
-	R_EXPR="$R_EXPR     cat('Downloading file ', i, '/', length(file_ids), ':\n', sep='');"
-	R_EXPR="$R_EXPR     url <- paste0('$TCGA_DATA_URL', file_ids[i]);"
-	R_EXPR="$R_EXPR     destfile <- file_names[i];"
-	R_EXPR="$R_EXPR     download.file(url, destfile);"
-	R_EXPR="$R_EXPR     cat('  --> saved as ', destfile, '\n\n', sep='')"
+	R_EXPR="$R_EXPR   cat('Downloading file ', i, '/', length(file_ids), ':\n', sep='');"
+	R_EXPR="$R_EXPR   url <- paste0('$TCGA_DATA_URL', file_ids[i]);"
+	R_EXPR="$R_EXPR   destfile <- file_names[i];"
+	R_EXPR="$R_EXPR   download.file(url, destfile);"
+	R_EXPR="$R_EXPR   cat('  --> saved as ', destfile, '\n\n', sep='')"
 	R_EXPR="$R_EXPR };"
 	R_EXPR="$R_EXPR cat('DONE DOWNLOADING FILES\n')"
 	Rscript -e "$R_EXPR"
@@ -72,16 +84,15 @@ fi
 
 ## Run run_infer.py
 
-## Note: using 'batch_size=64' and 'nr_inference_workers=12' caused the
-## following error on the hovernet1-4 instances for some images (I didn't
-## keep track which):
+## IMPORTANT NOTE: Using 'nr_inference_workers=12' caused the following error
+## on the hovernet1-4 instances for some images (I didn't keep track which):
 ##
 ##   tracker.py:254: UserWarning: resource_tracker: There appear to be 2
 ##     leaked semaphore objects to clean up at shutdown
 ##       warnings.warn('resource_tracker: There appear to be %d '
 ##     Killed
 ##
-## so reducing 'batch_size' to 48 and 'nr_inference_workers' to 10.
+## so reducing 'nr_inference_workers' to 10.
 ##
 ## Hmm.. still getting the error on these images:
 ##
@@ -148,6 +159,10 @@ fi
 ##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
 ##   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
 ##             (444M, 83968x56576 = 4.75 billion pixels!)
+##             Turns out that even with an 'nr_inference_workers' value as
+##             low as 1, this image still triggers the "leaked semaphore
+##             objects" error on hovernet2 (JS2 g3.large instance). Crazy!
+##             So I started the 'exclude_list' file and added the image to it.
 ##
 ##   fileid:   fdffd302-f1ef-466c-8f71-ea6776ef5165
 ##   filename: TCGA-06-0137-01Z-00-DX5.0f06ca27-54e2-490a-8afb-a19600e60619.svs
@@ -186,4 +201,37 @@ echo "PUSHHING BATCH RESULTS TO hoverboss ..."
 rsync -azv ~/infer_output $RSYNC_DEST_DIR
 echo ""
 echo "DONE PUSHHING BATCH RESULTS TO hoverboss."
+
+## IMPORTANT NOTE: Some images trigger the following KeyError in run_infer.py:
+##
+## |2024-12-12|16:44:26.525| [ERROR] Crash
+## Traceback (most recent call last):
+##   File "/home/hovernet/hover_net/infer/wsi.py", line 748, in process_wsi_list
+##     self.process_single_file(wsi_path, msk_path, self.output_dir)
+##   File "/home/hovernet/hover_net/infer/wsi.py", line 470, in process_single_file
+##     self.wsi_handler = get_file_handler(wsi_path, backend=wsi_ext)
+##                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+##   File "/home/hovernet/hover_net/misc/wsi_handler.py", line 201, in get_file_handler
+##     return OpenSlideHandler(path)
+##            ^^^^^^^^^^^^^^^^^^^^^^
+##   File "/home/hovernet/hover_net/misc/wsi_handler.py", line 109, in __init__
+##     self.metadata = self.__load_metadata()
+##                     ^^^^^^^^^^^^^^^^^^^^^^
+##   File "/home/hovernet/hover_net/misc/wsi_handler.py", line 119, in __load_metadata
+##     level_0_magnification = wsi_properties[openslide.PROPERTY_NAME_OBJECTIVE_POWER]
+##                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+##   File "/home/hovernet/miniconda3/envs/hovernet/lib/python3.12/site-packages/openslide/__init__.py", line 327, in __getitem__
+##     raise KeyError()
+## KeyError
+##
+## However the error doesn't kill run_infer.py. The script just skips the
+## image and continues to the next.
+##
+## The images that trigger this error seem to break run_infer.py no matter
+## what i.e. it doesn't seem related to what parameters we use when we call
+## the script.
+##
+## Affected images (added to the 'exclude_list' file):
+##   TCGA-05-4384-01Z-00-DX1.CA68BF29-BBE3-4C8E-B48B-554431A9EE13.svs
+##   TCGA-05-4390-01Z-00-DX1.858E64DF-DD3E-4F43-B7C1-CE35B33F1C90.svs
 

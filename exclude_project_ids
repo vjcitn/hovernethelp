@@ -1,0 +1,8 @@
+# We exclude the 541 images from the TCGA-LUAD project (Lung adenocarcinoma
+# study). Many of them seem to be causing problems:
+# - Some of them are huge (in terms of nb of pixels) and they trigger
+#   many "leaked semaphore objects" errors on JS2 g3.large instances,
+#   even with 'nr_inference_workers=1'.
+# - Others trigger the "KeyError" error or Bus error (with core dumped).
+# See infer_batch.sh for the details.
+TCGA-LUAD

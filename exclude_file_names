@@ -1,0 +1,3 @@
+# All images from the TCGA-LUAD project are already excluded via
+# the 'exclude_project_ids' file. No need to list them here.
+

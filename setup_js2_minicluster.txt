@@ -18,6 +18,10 @@ hoverboss:
 
     Attached volume:  inferdata1 (779 GB)
 
+Note about the size of inferdata1: run_infer.py seems to produce around 450 MB
+of output per image in average, so inferdata1 won't be big enough to store the
+results obtained for the 11765 TCGA images!
+
 Set up hoverboss
 ----------------
 

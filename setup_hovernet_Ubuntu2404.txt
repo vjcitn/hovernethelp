@@ -17,7 +17,8 @@ Tested on the following systems:
 - hovernet1, hovernet2, hovernet3, hovernet4, hovernet5:
     Jetstream2 instances, Ubuntu 24.04
     flavor: g3.large (16 CPUs, 60 GB RAM)
-    root disk: 200 GB
+    root disk: 200 GB (run_infer.py uses a lot of disk space for caching so
+                       make sure to choose at least 200 GB for the root disk)
     NVIDIA A100 GPU:
       - Ampere architecture
       - 6,912 CUDA cores
@@ -25,35 +26,6 @@ Tested on the following systems:
       - 40 GB HBM2e ECC
     user: hovernet
     password: *******
-
-NOTES:
-
-- run_infer.py uses a lot of disk space for caching so make sure
-  to set the size of the root disk to at least 200 GB.
-
-- Looks like these g3.medium instances are not powerful enough
-  to run run_infer.py on most TCGA images! E.g. on medium-size image:
-
-    fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
-    filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
-              (818M)
-
-  the script fails after a couple of minutes with the following error:
-
-    tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked
-      semaphore objects to clean up at shutdown
-        warnings.warn('resource_tracker: There appear to be %d '
-      Killed
-
-  Trying to reduce 'batch_size' and 'nr_inference_workers' to values
-  as low as 8 and 7, respectively, wouldn't change anything.
-
-- g3.large instances can process 27021ae8-db7e-4245-9307-f3bdae43c4b3
-  (with 'nr_inference_workers=12') and seem to be capable of processing
-  all TCGA images (so far) granted that we don't use a 'nr_inference_workers'
-  value > 5. See infer_batch.sh for examples of TCGA images that trigger
-  the "leaked semaphore objects" error when using a 'nr_inference_workers'
-  value of 6.
 
 SETUP
 -----
@@ -234,10 +206,6 @@ Populate input folder with the WSI images obtained with GenomicDataCommons
 
 Run run_infer.py
 
-    ## NOTE: 'nr_inference_workers' value very conservative on purpose.
-    ## This avoids running into nasty "leaked semaphore objects" errors
-    ## on JS2 g3.large instances. kakapo1 might be able to support higher
-    ## values (e.g. 12) but I still need to confirm this...
     cd ~
     conda activate hovernet
     time python ~/hover_net/run_infer.py \
@@ -246,17 +214,18 @@ Run run_infer.py
         --batch_size=48 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-        --nr_inference_workers=5 \
-        --nr_post_proc_workers=12 \
+        --nr_inference_workers=4 \
+        --nr_post_proc_workers=10 \
         wsi \
         --input_dir=$HOME/tcga_images/ \
         --output_dir=$HOME/infer_output/ \
         --save_thumb \
         --save_mask
 
-Timings:
+TIMINGS:
+
   TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs (818M)
-    machine    batch_size  infer workers       time
+    machine    batch_size  infer workers          time
     kakapo1            64             16  -->  109 min
     kakapo1            64             32  -->  143 min
     hovernet1          64             12  -->  106 min
@@ -264,9 +233,17 @@ Timings:
     hovernet3          64             20  -->  126 min
     hovernet4          64             16  -->  114 min
     hovernet5          48              6  -->  106 min
+    hovernet6          48              5  -->   86 min
+    hovernet6          48              4  -->   84 min
   TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
-    machine    batch_size  infer workers       time
-    kakapo1            64             16  -->  20 min
-    g3xl1              64             16  -->  24 min
-    hovernet1          64             16  -->  22 min
+    machine    batch_size  infer workers          time
+    kakapo1            64             16  -->   20 min
+    g3xl1              64             16  -->   24 min
+    hovernet1          64             16  -->   22 min
+
+Interestingly, and to my surprise, the smaller 'nr_inference_workers' the
+better the performance on JS2 g3.large instances. Note that we've not tested
+values < 4 yet.
+Still need to figure out what's the optimal 'nr_inference_workers' value
+on kakapo1 (it might be a little bit more than 4, maybe?)
 

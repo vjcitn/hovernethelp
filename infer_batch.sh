@@ -90,64 +90,18 @@ fi
 
 ## Run run_infer.py
 
-## IMPORTANT NOTE: Using 'nr_inference_workers=12' caused the following error
-## on the hovernet1-4 instances for some images (I didn't keep track which):
+## See timings at the bottom of setup_hovernet_Ubuntu2404.txt for the choice
+## of 'nr_inference_workers=4'.
 ##
-##   tracker.py:254: UserWarning: resource_tracker: There appear to be 2
-##     leaked semaphore objects to clean up at shutdown
-##       warnings.warn('resource_tracker: There appear to be %d '
-##     Killed
-##
-## so reducing 'nr_inference_workers' to 10.
-##
-## Hmm.. still getting the error on these images:
+## The following image triggers the "leaked semaphore objects" error on
+## the g3.large instances if using an 'nr_inference_workers' value > 9:
 ##
 ##   fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
 ##   filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
 ##   size:     818M, 54002x41831 pixels
 ##
-##   fileid:   ff17467a-64d2-41eb-9a8c-ebf50aecf272
-##   filename: TCGA-02-0010-01Z-00-DX2.5334831b-8e1f-4b61-bbf6-0f6e950a1b2f.svs
-##   size:     799M, 54002x40857 pixels
-##
-##   fileid:   203764ba-3d08-4ddc-80b2-76b63546f99b
-##   filename: TCGA-02-0034-01Z-00-DX1.aebc3ec5-2455-4aa1-b21a-ced8bdc6f3d8.svs
-##   size:     867M
-##
-## so reducing 'nr_inference_workers' to 9.
-##
-## Bummer, these new setting made the trick for the above images but now got
-## the error on images:
-##
-##   fileid:   6486cbcf-5c7e-4a51-879c-df2dd5487524
-##   filename: TCGA-02-0001-01Z-00-DX3.2836ce55-491f-4d86-99b1-668946927af8.svs
-##   size:     763M
-##
-##   fileid:   6aa4fc93-07e2-49f1-8738-7a51575a4564
-##   filename: TCGA-02-0010-01Z-00-DX3.33a67e8f-8bb6-498a-8c39-88b893c80b9e.svs
-##   size:     939M
-##
-##   fileid:   2760bd76-6274-471f-b588-81df88e6cb01
-##   filename: TCGA-02-0025-01Z-00-DX1.bea1009d-61ab-48dc-a6ae-530761306d4c.svs
-##   size:     509M, 42001x38551
-##
-##   fileid:   9171a524-a8d1-48d4-83d9-cb7de0968646
-##   filename: TCGA-02-0034-01Z-00-DX2.f86120e8-3574-4a1d-a42b-248e86e2674f.svs
-##   size:     851M
-##
-## so reducing 'nr_inference_workers' to 8.
-##
-## Argh!!.. this new setting made the trick for the above images but now got
-## the error on image:
-##
-##   fileid:   190b8413-f21e-4451-89cf-10ca505fb8db
-##   filename: TCGA-02-0025-01Z-00-DX2.aa8923a0-2930-47f4-bbff-ceb080fafc9e.svs
-##   size:     1.2G
-##
-## so reducing 'nr_inference_workers' to 7.
-##
-## Again, this new setting made the trick for the above image but now got
-## the error on images:
+## The following images trigger the "leaked semaphore objects" error on
+## the g3.large instances if using an 'nr_inference_workers' value > 6:
 ##
 ##   fileid:   f7cdd06d-8d92-4889-8fd0-717c7db32ff4
 ##   filename: TCGA-02-0026-01Z-00-DX1.d8f3085f-e418-47da-86bc-20db44ac6efd.svs
@@ -157,7 +111,8 @@ fi
 ##   filename: TCGA-02-0014-01Z-00-DX1.b7fd5196-fc51-4dc7-aa6d-e74e1e9ee71d.svs
 ##   size:     357M, 77695x20687 pixels
 ##
-## so reducing 'nr_inference_workers' to 6.
+## The following images trigger the "leaked semaphore objects" error on
+## the g3.large instances if using an 'nr_inference_workers' value > 5:
 ##
 ## Again, this new setting made the trick for the above images but now got
 ## the error on images:
@@ -168,38 +123,26 @@ fi
 ##     | Turns out that even with an 'nr_inference_workers' value as low as 1,
 ##     | this image still triggers the "leaked semaphore objects" error on
 ##     | hovernet2 (JS2 g3.large instance). Crazy!
-##     | So I started the 'exclude_file_names' file and added the image to it.
+##     | Other images from the same project (TCGA-LUAD) also have a crazy
+##     | size in terms of number of pixels (see below) so all 541 images from
+##     | this project are now excluded via the 'exclude_project_ids' file!
 ##
 ##   fileid:   fdffd302-f1ef-466c-8f71-ea6776ef5165
 ##   filename: TCGA-06-0137-01Z-00-DX5.0f06ca27-54e2-490a-8afb-a19600e60619.svs
 ##   size:     821M, 56002x38719 pixels
 ##
-## so reducing 'nr_inference_workers' to 5.
-##
-## Again, this new setting made the trick for the above image but now got
-## the error on images:
+## The following images trigger the "leaked semaphore objects" error on
+## the g3.large instances if using an 'nr_inference_workers' value > 4:
 ##
 ##   fileid:   5018f804-cc47-4081-88e4-55c75095ecc2
 ##   filename: TCGA-05-4398-01Z-00-DX1.269bc75f-492e-48b1-87ee-85924aa80e74.svs
 ##   size:     682M, 98304x111360 (= 10.2 billion pixels!!!)
-##     | Goes straight to jail!
+##     | From the TCGA-LUAD project --> goes straight to jail! (see above)
 ##
 ##   fileid:   03e2bc97-060e-4575-9510-4d7ec8a9c9e8
 ##   filename: TCGA-05-4402-01Z-00-DX1.c653ddc2-88c1-45ac-88e7-4e512b8e8d53.svs
 ##   size:     597M, 80896x100096 (= 8.1 billion pixels!!!)
-##     | Goes straight to jail!
-##
-##   fileid:   d14d5041-6ea8-431a-82e7-ba3f98e88711
-##   filename: TCGA-05-4403-01Z-00-DX1.fee8e988-956c-42a2-a6c5-06b6d6736295.svs
-##   size:
-##
-##   fileid:   6b0e0c19-b841-4bd8-aa4e-5e947bc8cd32
-##   filename: TCGA-05-4405-01Z-00-DX1.D57EC2B2-3A59-4954-86A7-61782938BCC5.svs
-##   size:
-##
-##   fileid:   a79c96ab-5f63-41ba-95e8-18d4bfbb998a
-##   filename: TCGA-05-4415-01Z-00-DX1.55E0C429-B308-4962-8DA9-41D7D3F7764E.svs
-##   size:
+##     | From the TCGA-LUAD project --> goes straight to jail! (see above)
 ##
 ##   fileid:   97263433-36d7-46c6-80f2-6d61c5cdcbe8
 ##   filename: TCGA-06-0137-01Z-00-DX7.c0c25c01-8602-47a5-8d52-cb323c3432d2.svs
@@ -208,13 +151,6 @@ fi
 ##   fileid:   f167eecc-d056-455f-b11f-da8bdd3388e8
 ##   filename: TCGA-06-0156-01Z-00-DX2.e1846804-6f1d-4941-866d-dc54278dbba0.svs
 ##   size:     312M, 40291x39497 pixels
-##
-## However I'm hesitant to set 'nr_inference_workers=4' in the call to
-## run_infer.py below because I'm not sure how this would impact performance.
-## Interestingly, and to my surprise, decreasing the value
-## of 'nr_inference_workers' from 12 to 6 didn't seem to have have any
-## significant impact on performance but I'm not sure about going as low as 4.
-## So only changing the value to 4 locally (on hovernet2, 3 and 4) for now...
 ##
 ## This whole thing seems to be due to a lack of power (GPU? CPU? both?) or
 ## memory (GPU memory? main memory? both?) of the JS2 g3.large instances.
@@ -229,8 +165,8 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=5 \
-	--nr_post_proc_workers=12 \
+	--nr_inference_workers=4 \
+	--nr_post_proc_workers=10 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \
 	--output_dir=$HOME/infer_output/ \

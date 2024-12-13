@@ -2,7 +2,7 @@
 Set up mini cluster on JS2
 -------------------------------------------------------------------------------
 
-Cluster: 5 workers (hovernet1-4 + kakapo1)
+Cluster: 6 workers (hovernet1-4,6 + kakapo1)
          + hoverboss (centralize results)
 
 All nodes are JS2 instances except kakapo1 that is a physical server at DFCI.
@@ -32,7 +32,7 @@ Only for convenience
 Install R 4.4 as documented above
 
 In /media/volume/inferdata1/: create one subdir per worker (i.e.
-subdirs hovernet1-4 + kakapo1). They must belong to the hovernet user.
+subdirs hovernet1-4,6 + kakapo1). They must belong to the hovernet user.
 Make sure to create a new subfolder for each new node added to the cluster.
 
 Cluster setup
@@ -99,13 +99,15 @@ If that was successful then do it again with:
     151:200 on hovernet3  (started on 2024-12-12 at 6:45 am PST)   22M/911M
     201:250 on hovernet4
     251:300 on kakapo1    (started on 2024-12-12 at 6:50 am PST)   16M/1.5G
+    301:320 on hovernet6  (started on 2024-12-13 at 0:06 am PST)
 
 If that was successful then do it again with:
-    301:350 on hovernet1
-    351:400 on hovernet2
-    401:450 on hovernet3
-    451:500 on hovernet4
-    501:550 on kakapo1
+    321:370 on hovernet1
+    371:420 on hovernet2
+    421:470 on hovernet3
+    471:520 on hovernet4
+    521:570 on hovernet6
+    571:620 on kakapo1
 
 etc...
 

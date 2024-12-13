@@ -5,7 +5,7 @@ or NVIDIA L40S GPU
 
 Tested on the following systems:
 
-- hovernet1, hovernet2, hovernet3, hovernet4, hovernet5:
+- hovernet1-6:
     Jetstream2 instances, Ubuntu 24.04
     flavor: g3.large (16 CPUs, 60 GB RAM)
     root disk: 200 GB (run_infer.py uses a lot of disk space for caching so

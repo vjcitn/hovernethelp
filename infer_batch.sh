@@ -91,7 +91,7 @@ fi
 ## Run run_infer.py
 
 ## See timings at the bottom of the 'setup_hovernet_Ubuntu2404.txt' file for
-## our choice to use 'nr_inference_workers=3' on the JS2 g3.large workers.
+## our choice to use 'nr_inference_workers=2' on the JS2 g3.large workers.
 ##
 ## The following image triggers the "leaked semaphore objects" error on
 ## the g3.large instances if using an 'nr_inference_workers' value > 9:
@@ -123,9 +123,9 @@ fi
 ##     | Turns out that even with an 'nr_inference_workers' value as low as 1,
 ##     | this image still triggers the "leaked semaphore objects" error on
 ##     | hovernet2 (JS2 g3.large instance). Crazy!
-##     | Other images from the same project (TCGA-LUAD) also have a crazy
-##     | size in terms of number of pixels (see below) so all 541 images from
-##     | this project are now excluded via the 'exclude_project_ids' file!
+##     | Other images from the same project (TCGA-LUAD) also have crazy sizes
+##     | in terms of number of pixels (see below) so all 541 images from this
+##     | project are now excluded via the 'exclude_project_ids' file!
 ##
 ##   fileid:   fdffd302-f1ef-466c-8f71-ea6776ef5165
 ##   filename: TCGA-06-0137-01Z-00-DX5.0f06ca27-54e2-490a-8afb-a19600e60619.svs
@@ -155,13 +155,20 @@ fi
 ## The following images trigger the "leaked semaphore objects" error on
 ## the g3.large instances if using an 'nr_inference_workers' value > 3:
 ##
-##   fileid:
+##   fileid:   f283f239-1df7-4c78-9104-3f2c311a097e
 ##   filename: TCGA-06-0141-01Z-00-DX2.9c16caf2-d538-4233-9480-1188d85c229d.svs
-##   size:
+##   size:     484M, 47006x38019 pixels
 ##
-##   fileid:
+##   fileid:   0dcd9d19-56c6-4a7d-942d-9d035dc8c37a
 ##   filename: TCGA-06-0166-01Z-00-DX5.a5de0008-83a4-4bff-8efe-fa70dcc9a6a3.svs
-##   size:
+##   size:     686M, 48925x35655 pixels
+##
+## The following image triggers the "leaked semaphore objects" error on
+## the g3.large instances if using an 'nr_inference_workers' value > 2:
+##
+##   fileid:   7ff0b47d-4fb6-4b58-bf43-d2dc148c1786
+##   filename: TCGA-06-0168-01Z-00-DX2.ff5ffc86-6220-432b-bb9f-0c15bfa1a157.svs
+##   size:     1.3G, 58002x41263 pixels
 ##
 ## The whole "leaked semaphore objects" thing seems to be due to a lack of
 ## power (GPU? CPU? both?) or memory (GPU memory? main memory? both?) of the
@@ -177,7 +184,7 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=3 \
+	--nr_inference_workers=2 \
 	--nr_post_proc_workers=8 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \

@@ -91,17 +91,17 @@ fi
 ## Run run_infer.py
 
 ## See timings at the bottom of the 'setup_hovernet_Ubuntu2404.txt' file for
-## our choice to use 'nr_inference_workers=2' on the JS2 g3.large workers.
+## our choice to use 'nr_inference_workers=1' on the JS2 g3.large workers.
 ##
 ## The following image triggers the "leaked semaphore objects" error on
-## the g3.large instances if using an 'nr_inference_workers' value > 9:
+## the JS2 g3.large instances if using an 'nr_inference_workers' value > 9:
 ##
 ##   fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
 ##   filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
 ##   size:     818M, 54002x41831 pixels
 ##
 ## The following images trigger the "leaked semaphore objects" error on
-## the g3.large instances if using an 'nr_inference_workers' value > 6:
+## the JS2 g3.large instances if using an 'nr_inference_workers' value > 6:
 ##
 ##   fileid:   f7cdd06d-8d92-4889-8fd0-717c7db32ff4
 ##   filename: TCGA-02-0026-01Z-00-DX1.d8f3085f-e418-47da-86bc-20db44ac6efd.svs
@@ -111,38 +111,25 @@ fi
 ##   filename: TCGA-02-0014-01Z-00-DX1.b7fd5196-fc51-4dc7-aa6d-e74e1e9ee71d.svs
 ##   size:     357M, 77695x20687 pixels
 ##
-## The following images trigger the "leaked semaphore objects" error on
-## the g3.large instances if using an 'nr_inference_workers' value > 5:
-##
-## Again, this new setting made the trick for the above images but now got
-## the error on images:
-##
-##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
-##   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
-##   size:     444M, 83968x56576 (= 4.75 billion pixels!)
-##     | Turns out that even with an 'nr_inference_workers' value as low as 1,
-##     | this image still triggers the "leaked semaphore objects" error on
-##     | hovernet2 (JS2 g3.large instance). Crazy!
-##     | Other images from the same project (TCGA-LUAD) also have crazy sizes
-##     | in terms of number of pixels (see below) so all 541 images from this
-##     | project are now excluded via the 'exclude_project_ids' file!
+## The following image triggers the "leaked semaphore objects" error on
+## the JS2 g3.large instances if using an 'nr_inference_workers' value > 5:
 ##
 ##   fileid:   fdffd302-f1ef-466c-8f71-ea6776ef5165
 ##   filename: TCGA-06-0137-01Z-00-DX5.0f06ca27-54e2-490a-8afb-a19600e60619.svs
 ##   size:     821M, 56002x38719 pixels
 ##
 ## The following images trigger the "leaked semaphore objects" error on
-## the g3.large instances if using an 'nr_inference_workers' value > 4:
+## the JS2 g3.large instances if using an 'nr_inference_workers' value > 4:
 ##
 ##   fileid:   5018f804-cc47-4081-88e4-55c75095ecc2
 ##   filename: TCGA-05-4398-01Z-00-DX1.269bc75f-492e-48b1-87ee-85924aa80e74.svs
 ##   size:     682M, 98304x111360 (= 10.2 billion pixels!!!)
-##     | From the TCGA-LUAD project --> goes straight to jail! (see above)
+##     | From the TCGA-LUAD project --> goes straight to jail! (see below)
 ##
 ##   fileid:   03e2bc97-060e-4575-9510-4d7ec8a9c9e8
 ##   filename: TCGA-05-4402-01Z-00-DX1.c653ddc2-88c1-45ac-88e7-4e512b8e8d53.svs
 ##   size:     597M, 80896x100096 (= 8.1 billion pixels!!!)
-##     | From the TCGA-LUAD project --> goes straight to jail! (see above)
+##     | From the TCGA-LUAD project --> goes straight to jail! (see below)
 ##
 ##   fileid:   97263433-36d7-46c6-80f2-6d61c5cdcbe8
 ##   filename: TCGA-06-0137-01Z-00-DX7.c0c25c01-8602-47a5-8d52-cb323c3432d2.svs
@@ -153,7 +140,7 @@ fi
 ##   size:     312M, 40291x39497 pixels
 ##
 ## The following images trigger the "leaked semaphore objects" error on
-## the g3.large instances if using an 'nr_inference_workers' value > 3:
+## the JS2 g3.large instances if using an 'nr_inference_workers' value > 3:
 ##
 ##   fileid:   f283f239-1df7-4c78-9104-3f2c311a097e
 ##   filename: TCGA-06-0141-01Z-00-DX2.9c16caf2-d538-4233-9480-1188d85c229d.svs
@@ -164,11 +151,22 @@ fi
 ##   size:     686M, 48925x35655 pixels
 ##
 ## The following image triggers the "leaked semaphore objects" error on
-## the g3.large instances if using an 'nr_inference_workers' value > 2:
+## the JS2 g3.large instances if using an 'nr_inference_workers' value > 2:
 ##
 ##   fileid:   7ff0b47d-4fb6-4b58-bf43-d2dc148c1786
 ##   filename: TCGA-06-0168-01Z-00-DX2.ff5ffc86-6220-432b-bb9f-0c15bfa1a157.svs
 ##   size:     1.3G, 58002x41263 pixels
+##
+## The following image **always** triggers the "leaked semaphore objects" error
+## on the JS2 g3.large instances, even with 'nr_inference_workers=1':
+##
+##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
+##   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
+##   size:     444M, 83968x56576 (= 4.75 billion pixels!)
+##     | Other images from the same project (TCGA-LUAD) also have crazy sizes
+##     | in terms of number of pixels (see below) and are particulary good at
+##     | breaking run_infer.py so all 541 images from this project are now
+##     | excluded via the 'exclude_project_ids' file!
 ##
 ## The whole "leaked semaphore objects" thing seems to be due to a lack of
 ## power (GPU? CPU? both?) or memory (GPU memory? main memory? both?) of the
@@ -184,7 +182,7 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=2 \
+	--nr_inference_workers=1 \
 	--nr_post_proc_workers=8 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \

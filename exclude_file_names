@@ -1,3 +1,17 @@
-# All images from the TCGA-LUAD project are already excluded via
-# the 'exclude_project_ids' file. No need to list them here.
+# Note that all images from the TCGA-LUAD project are already excluded
+# via the 'exclude_project_ids' file. No need to list them here.
+
+# -----------------------------------------------------------------------------
+# List of images that trigger the "leaked semaphore objects" error on the
+# JS2 g3.large instances.
+
+# from TCGA-GBM project:
+TCGA-06-0125-01Z-00-DX2.4f9cef92-2bdb-480d-8704-94289f8b70fb.svs
+
+# -----------------------------------------------------------------------------
+# List of images that grow a ~/cache/ bigger than 147G. This fills the
+# 200 GB root disk on the JS2 g3.large instances.
+
+# from TCGA-GBM project:
+TCGA-06-0168-01Z-00-DX3.6a390bd7-bbe8-4cdf-a562-2ef52d781186.svs
 

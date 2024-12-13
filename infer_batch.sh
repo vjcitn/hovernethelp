@@ -123,12 +123,12 @@ fi
 ##
 ##   fileid:   5018f804-cc47-4081-88e4-55c75095ecc2
 ##   filename: TCGA-05-4398-01Z-00-DX1.269bc75f-492e-48b1-87ee-85924aa80e74.svs
-##   size:     682M, 98304x111360 (= 10.2 billion pixels!!!)
+##   size:     682M, 98304x111360 pixels (= 10.2 billion pixels!!!)
 ##     | From the TCGA-LUAD project --> goes straight to jail! (see below)
 ##
 ##   fileid:   03e2bc97-060e-4575-9510-4d7ec8a9c9e8
 ##   filename: TCGA-05-4402-01Z-00-DX1.c653ddc2-88c1-45ac-88e7-4e512b8e8d53.svs
-##   size:     597M, 80896x100096 (= 8.1 billion pixels!!!)
+##   size:     597M, 80896x100096 pixels (= 8.1 billion pixels!!!)
 ##     | From the TCGA-LUAD project --> goes straight to jail! (see below)
 ##
 ##   fileid:   97263433-36d7-46c6-80f2-6d61c5cdcbe8
@@ -157,16 +157,20 @@ fi
 ##   filename: TCGA-06-0168-01Z-00-DX2.ff5ffc86-6220-432b-bb9f-0c15bfa1a157.svs
 ##   size:     1.3G, 58002x41263 pixels
 ##
-## The following image **always** triggers the "leaked semaphore objects" error
-## on the JS2 g3.large instances, even with 'nr_inference_workers=1':
+## The following images **always** trigger the "leaked semaphore objects"
+## error on the JS2 g3.large instances, even with 'nr_inference_workers=1':
 ##
 ##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
 ##   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
-##   size:     444M, 83968x56576 (= 4.75 billion pixels!)
+##   size:     444M, 83968x56576 pixels (= 4.75 billion pixels!)
 ##     | Other images from the same project (TCGA-LUAD) also have crazy sizes
 ##     | in terms of number of pixels (see below) and are particulary good at
 ##     | breaking run_infer.py so all 541 images from this project are now
 ##     | excluded via the 'exclude_project_ids' file!
+##
+##   fileid:   ae4fa8d9-267a-4d47-93f8-e8e2b8beb871
+##   filename: TCGA-06-0125-01Z-00-DX2.4f9cef92-2bdb-480d-8704-94289f8b70fb.svs
+##   size:     469M, 77905x41217 pixels
 ##
 ## The whole "leaked semaphore objects" thing seems to be due to a lack of
 ## power (GPU? CPU? both?) or memory (GPU memory? main memory? both?) of the

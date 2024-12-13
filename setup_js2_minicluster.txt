@@ -95,11 +95,11 @@ Will take hours to complete! (between 15 and 25 hours)
 
 If that was successful then do it again with:
      51:100 on hovernet1  (started on 2024-12-12 at 7:09 am PST)  174M/2.8G
-    101:150 on hovernet2  (started on 2024-12-12 at 7:05 am PST)  6.1M/695M
+    101:150 on hovernet2  (started on 2024-12-12 at 7:05 am PST)   71M/695M
     151:200 on hovernet3  (started on 2024-12-12 at 6:45 am PST)   22M/911M
-    201:250 on hovernet4
+    201:250 on hovernet4                                           30M/1.3G
     251:300 on kakapo1    (started on 2024-12-12 at 6:50 am PST)   16M/1.5G
-    301:320 on hovernet6  (started on 2024-12-13 at 0:06 am PST)
+    301:320 on hovernet6  (started on 2024-12-13 at 0:06 am PST)   49M/1.4G
 
 If that was successful then do it again with:
     321:370 on hovernet1

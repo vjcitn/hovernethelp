@@ -7,7 +7,7 @@ Cluster: 5 workers (hovernet1-4 + kakapo1)
 
 All nodes are JS2 instances except kakapo1 that is a physical server at DFCI.
 
-See setup_hovernet_Ubuntu2404.txt for how to set up the 5 workers.
+See 'setup_hovernet_Ubuntu2404.txt' file for how to set up the 5 workers.
 
 hoverboss:
     Jetstream2 instance, Ubuntu 24.04

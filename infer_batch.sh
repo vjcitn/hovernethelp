@@ -90,8 +90,8 @@ fi
 
 ## Run run_infer.py
 
-## See timings at the bottom of setup_hovernet_Ubuntu2404.txt for the choice
-## of 'nr_inference_workers=4'.
+## See timings at the bottom of the 'setup_hovernet_Ubuntu2404.txt' file for
+## our choice to use 'nr_inference_workers=3' on the JS2 g3.large workers.
 ##
 ## The following image triggers the "leaked semaphore objects" error on
 ## the g3.large instances if using an 'nr_inference_workers' value > 9:
@@ -152,8 +152,20 @@ fi
 ##   filename: TCGA-06-0156-01Z-00-DX2.e1846804-6f1d-4941-866d-dc54278dbba0.svs
 ##   size:     312M, 40291x39497 pixels
 ##
-## This whole thing seems to be due to a lack of power (GPU? CPU? both?) or
-## memory (GPU memory? main memory? both?) of the JS2 g3.large instances.
+## The following images trigger the "leaked semaphore objects" error on
+## the g3.large instances if using an 'nr_inference_workers' value > 3:
+##
+##   fileid:
+##   filename: TCGA-06-0141-01Z-00-DX2.9c16caf2-d538-4233-9480-1188d85c229d.svs
+##   size:
+##
+##   fileid:
+##   filename: TCGA-06-0166-01Z-00-DX5.a5de0008-83a4-4bff-8efe-fa70dcc9a6a3.svs
+##   size:
+##
+## The whole "leaked semaphore objects" thing seems to be due to a lack of
+## power (GPU? CPU? both?) or memory (GPU memory? main memory? both?) of the
+## JS2 g3.large instances.
 
 cd ~
 echo ""
@@ -165,8 +177,8 @@ python ~/hover_net/run_infer.py \
 	--batch_size=48 \
 	--model_mode=fast \
 	--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-	--nr_inference_workers=4 \
-	--nr_post_proc_workers=10 \
+	--nr_inference_workers=3 \
+	--nr_post_proc_workers=8 \
 	wsi \
 	--input_dir=$HOME/tcga_images/ \
 	--output_dir=$HOME/infer_output/ \

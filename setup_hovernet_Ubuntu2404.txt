@@ -1,18 +1,9 @@
 ===============================================================================
 Set up hovernet environment on an Ubuntu 24.04 system with an NVIDIA A100
-or L40S GPU
+or NVIDIA L40S GPU
 -------------------------------------------------------------------------------
 
 Tested on the following systems:
-
-- kakapo1:
-    DFCI server, Ubuntu 24.04
-    NVIDIA L40S GPU
-      - Ada Lovelace architecture (successor of Ampere architecture)
-      - 18,176 CUDA cores
-      - 568 Tensor cores
-      - 142 RT Cores
-      - 48 GB with ECC
 
 - hovernet1, hovernet2, hovernet3, hovernet4, hovernet5:
     Jetstream2 instances, Ubuntu 24.04
@@ -26,6 +17,16 @@ Tested on the following systems:
       - 40 GB HBM2e ECC
     user: hovernet
     password: *******
+
+- kakapo1:
+    DFCI server, Ubuntu 24.04
+    96 CPUs, 128 GB RAM
+    NVIDIA L40S GPU
+      - Ada Lovelace architecture (successor of Ampere architecture)
+      - 18,176 CUDA cores
+      - 568 Tensor cores
+      - 142 RT Cores
+      - 48 GB with ECC
 
 SETUP
 -----
@@ -214,36 +215,49 @@ Run run_infer.py
         --batch_size=48 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-        --nr_inference_workers=4 \
-        --nr_post_proc_workers=10 \
+        --nr_inference_workers=3 \
+        --nr_post_proc_workers=8 \
         wsi \
         --input_dir=$HOME/tcga_images/ \
         --output_dir=$HOME/infer_output/ \
         --save_thumb \
         --save_mask
 
-TIMINGS:
+TIMINGS
+-------
 
-  TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs (818M)
-    machine    batch_size  infer workers          time
-    kakapo1            64             16  -->  109 min
-    kakapo1            64             32  -->  143 min
-    hovernet1          64             12  -->  106 min
-    hovernet3         128             16  -->  error (CUDA out of memory)
-    hovernet3          64             20  -->  126 min
-    hovernet4          64             16  -->  114 min
-    hovernet5          48              6  -->  106 min
-    hovernet6          48              5  -->   86 min
-    hovernet6          48              4  -->   84 min
-  TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
-    machine    batch_size  infer workers          time
-    kakapo1            64             16  -->   20 min
-    g3xl1              64             16  -->   24 min
-    hovernet1          64             16  -->   22 min
+- on TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs (818M):
+
+    machine    batch_size  infer workers            time
+    ---------  ----------  -------------         -------
+
+    hovernet3          64             20   -->   126 min
+    hovernet3         128             16   -->   error (CUDA out of memory)
+    hovernet4          64             16   -->   114 min
+    hovernet1          64             12   -->   106 min
+    hovernet5          48              6   -->   106 min
+    hovernet6          48              5   -->    86 min
+    hovernet6          48              4   -->    84 min
+    hovernet6          48              3   -->    82 min
+    hovernet6          48              2   -->    ?? min
+
+    kakapo1            64             32   -->   143 min
+    kakapo1            64             16   -->   109 min
+
+- on TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
+
+    machine    batch_size  infer workers           time
+    ---------  ----------  -------------         -------
+
+    g3xl1              64             16   -->    24 min
+    hovernet1          64             16   -->    22 min
+
+    kakapo1            64             16   -->    20 min
 
 Interestingly, and to my surprise, the smaller 'nr_inference_workers' the
 better the performance on JS2 g3.large instances. Note that we've not tested
-values < 4 yet.
+values < 3 yet.
+
 Still need to figure out what's the optimal 'nr_inference_workers' value
-on kakapo1 (it might be a little bit more than 4, maybe?)
+for kakapo1. I suspect it's going to be > 3, but who knows...
 

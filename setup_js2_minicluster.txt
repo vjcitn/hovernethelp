@@ -2,7 +2,7 @@
 Set up mini cluster on JS2
 -------------------------------------------------------------------------------
 
-Cluster: 6 workers (hovernet1-4,6 + kakapo1)
+Cluster: 7 workers (hovernet1,2,3,4,6,7 + kakapo1)
          + hoverboss (centralize results)
 
 All nodes are JS2 instances except kakapo1 that is a physical server at DFCI.
@@ -32,7 +32,7 @@ Only for convenience
 Install R 4.4 as documented above
 
 In /media/volume/inferdata1/: create one subdir per worker (i.e.
-subdirs hovernet1-4,6 + kakapo1). They must belong to the hovernet user.
+subdirs hovernet1,2,3,4,6,7 + kakapo1). They must belong to the hovernet user.
 Make sure to create a new subfolder for each new node added to the cluster.
 
 Cluster setup
@@ -93,21 +93,106 @@ Note: image 40 is huge!
 
 Will take hours to complete! (between 15 and 25 hours)
 
-If that was successful then do it again with:
-     51:100 on hovernet1  (started on 2024-12-12 at 7:09 am PST)  174M/2.8G
-    101:150 on hovernet2  (started on 2024-12-12 at 7:05 am PST)   71M/695M
-    151:200 on hovernet3  (started on 2024-12-12 at 6:45 am PST)   22M/911M
-    201:250 on hovernet4                                           30M/1.3G
-    251:300 on kakapo1    (started on 2024-12-12 at 6:50 am PST)   16M/1.5G
-    301:320 on hovernet6  (started on 2024-12-13 at 0:06 am PST)   49M/1.4G
 
-If that was successful then do it again with:
-    321:370 on hovernet1
-    371:420 on hovernet2
-    421:470 on hovernet3
-    471:520 on hovernet4
-    521:570 on hovernet6
-    571:620 on kakapo1
+-------------------------------------------------------------------------------
+RUNS LOG
+--------
 
-etc...
+GENERAL RUNS:
+
+- On hovernet1: Images 51-100
+    Command: time hovernethelp/infer_batch.sh '51:100' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-12 at 7:09 am PST
+    Size of batch: 50 images, total size 56G (smallest 174M, biggest 2.8G)
+    Status: COMPLETED
+
+- On hovernet2: Images 101-150
+    Command: time hovernethelp/infer_batch.sh '101:150' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-12 at 7:05 am PST
+    Size of batch: 21 images, total size ??? (smallest 71M, biggest 695M)
+    Status: COMPLETED
+
+- On hovernet3: Images 151-200
+    Command: time hovernethelp/infer_batch.sh '151:200' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-12 at 6:45 am PST
+    Size of batch: 50 images, total size ??? (smallest 22M, biggest 911M)
+    Status: COMPLETED
+
+- On hovernet4: Images 201-250
+    Command: time hovernethelp/infer_batch.sh '201:250' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-12 at ???
+    Size of batch: 49 images, total size 18G (smallest 30M, biggest 1.3G)
+    Status: COMPLETED
+
+- On kakapo1:   Images 251-300
+    Command: time hovernethelp/infer_batch.sh '251:300' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-12 at 6:50 am PST
+    Size of batch: 50 images, total size 26G (smallest 16M, biggest 1.5G)
+    Status: COMPLETED
+
+- On hovernet6: Images 301-320
+    Command: time hovernethelp/infer_batch.sh '301:320' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-13 at 0:06 am PST
+    Size of batch: 20 images, total size 8.3G (smallest 49M, biggest 1.4G)
+    Status: COMPLETED
+
+OVARIAN CANCER RUNS:
+
+- On hovernet7: First 15 images from OVARIAN CANCER study
+    i.e. images 655,656,894,895,896,897,898,899,900,901,
+                902,903,904,905,906
+    List obtained in R with:
+        load('~/imageTCGA/R/sysdata.rda')
+        which(db[,"Project.ID"] == "TCGA-OV")[1:15]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[1:15]' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-13 at 3:59 pm PST
+    Size of batch: 14 images, total size 21G (smallest 520M, biggest 2.2G)
+    Status: RUNNING
+
+- On hovernet6: 16th to 30th images from OVARIAN CANCER study
+    i.e. images 907,908,909,910,911,912,913,914,915,916,
+                917,918,919,920,921
+    List obtained in R with:
+        load('~/imageTCGA/R/sysdata.rda')
+        which(db[,"Project.ID"] == "TCGA-OV")[16:30]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[16:30]' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-13 at 5:24 pm PST
+    Size of batch: 15 images, total size 27G (smallest 943M, biggest 2.5G)
+    Status: RUNNING
+
+- On hovernet2: 31st to 60th images from OVARIAN CANCER study
+    i.e. images 922,923,924,925,926,927,928,929,930,931,
+                932,933,934,935,936,937,938,939,940,941,
+                942,943,944,945,946,947,948,949,950,951
+    List obtained in R with:
+        load('~/imageTCGA/R/sysdata.rda')
+        which(db[,"Project.ID"] == "TCGA-OV")[31:60]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[31:60]' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-13 at 3:25 pm PST
+    Size of batch: 30 images, total size 72G (smallest 836M, biggest 3.8G)
+    Status: RUNNING
+
+- On hovernet3: 61st to 75th images from OVARIAN CANCER study
+    i.e. images 952,953,954,955,956,957,958,959,960,961,
+                962,963,964,965,966
+    List obtained in R with:
+        load('~/imageTCGA/R/sysdata.rda')
+        which(db[,"Project.ID"] == "TCGA-OV")[61:75]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[61:75]' >>infer_batch.log 2>&1 &
+    Started on: 2024-12-13 at 3:44 pm PST
+    Size of batch: 15 images, total size 41G (smallest 2.0G, biggest 4.0G)
+    Status: RUNNING
+
+- On kakapo1: Last 32 images from OVARIAN CANCER study
+    i.e. images 967,968,969,970,971,972,973,974,975,976,
+                1476,1504,1505,1506,1507,1508,1509,1510,1952,1953,
+                1954,1955,1956,1957,1958,1964,2005,9880,9881,10847,
+                10848,11241
+    List obtained in R with:
+        load('~/imageTCGA/R/sysdata.rda')
+        which(db[,"Project.ID"] == "TCGA-OV")[76:107]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[76:107]' >>infer_batch.log 2>&1 &
+    Started on: NOT STARTED YET!
+    Size of batch: ???
+    Status: NOT STARTED YET!
 

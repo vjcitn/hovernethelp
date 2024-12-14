@@ -159,6 +159,8 @@ fi
 ##
 ## The following images **always** trigger the "leaked semaphore objects"
 ## error on the JS2 g3.large instances, even with 'nr_inference_workers=1':
+## (Hmm... but it seems that deleting ~/cache/ and rebooting the instance
+## might sometimes help here!)
 ##
 ##   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
 ##   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
@@ -171,6 +173,24 @@ fi
 ##   fileid:   ae4fa8d9-267a-4d47-93f8-e8e2b8beb871
 ##   filename: TCGA-06-0125-01Z-00-DX2.4f9cef92-2bdb-480d-8704-94289f8b70fb.svs
 ##   size:     469M, 77905x41217 pixels
+##
+##   filename: TCGA-02-0337-01Z-00-DX1.c7d3d96c-789b-4844-8731-1279d44955ec.svs
+##     | Deleting ~/cache/ on hovernet1 and rebooting solved it!
+##
+##   filename: TCGA-06-0152-01Z-00-DX6.b20146eb-b6a1-4f9f-842f-8761fc489965.svs
+##     | Deleting ~/cache/ on hovernet3 and rebooting solved it!
+##
+##   filename: TCGA-06-0171-01Z-00-DX5.223799ea-caac-4314-8e9d-5cb466756a64.svs
+##     | Deleting ~/cache/ on hovernet4 and rebooting solved it!
+##
+##   filename: TCGA-06-0216-01Z-00-DX4.3c6ee8ee-81df-4714-b04d-3088c11b0aa2.svs
+##     | Deleting ~/cache/ on hovernet6 and rebooting solved it!
+##
+##   fileid:   877ab00f-2431-4a99-86a7-53f39e233426
+##   filename: TCGA-13-A5FT-01Z-00-DX1.2B292DC8-7336-4CD9-AB1A-F6F482E6151A.svs
+##   size:     660M, 97869x42959 pixels (= 4.2 billion pixels!)
+##     | From TCGA-OV project (ovarian cancer study).
+##     | Deleting ~/cache/ and rebooting hovernet7 did NOT help!
 ##
 ## The whole "leaked semaphore objects" thing seems to be due to a lack of
 ## power (GPU? CPU? both?) or memory (GPU memory? main memory? both?) of the

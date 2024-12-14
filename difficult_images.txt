@@ -1,0 +1,245 @@
+===============================================================================
+==== Keeping track of problems encountered with difficult TCGA images here ====
+===============================================================================
+
+
+
+===============================================================================
+"leaked semaphore objects" errors
+-------------------------------------------------------------------------------
+
+
+A lot more "leaked semaphore objects" errors on the JS2 g3.large instances
+compared to kakapo1.
+
+The whole "leaked semaphore objects" thing seems to be due to a lack of
+power (GPU? CPU? both?) or memory (GPU memory? main memory? both?) of the
+JS2 g3.large instances.
+
+Most of the time (but not always) deleting the run_infer.py cache (~/cache/)
+and rebooting the instance helps.
+
+On the JS2 g3.large instances
+-----------------------------
+
+The following image triggers the "leaked semaphore objects" error on the
+JS2 g3.large instances if using an 'nr_inference_workers' value > 9:
+
+  fileid:   27021ae8-db7e-4245-9307-f3bdae43c4b3
+  filename: TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
+  size:     818M, 54002x41831 pixels
+
+The following images trigger the "leaked semaphore objects" error on
+the JS2 g3.large instances if using an 'nr_inference_workers' value > 6:
+
+  fileid:   f7cdd06d-8d92-4889-8fd0-717c7db32ff4
+  filename: TCGA-02-0026-01Z-00-DX1.d8f3085f-e418-47da-86bc-20db44ac6efd.svs
+  size:     966M, 46002x33898 pixels
+
+  fileid:   ac51c752-2fa1-4923-a443-6ca84adb8c2a
+  filename: TCGA-02-0014-01Z-00-DX1.b7fd5196-fc51-4dc7-aa6d-e74e1e9ee71d.svs
+  size:     357M, 77695x20687 pixels
+
+The following image triggers the "leaked semaphore objects" error on the
+JS2 g3.large instances if using an 'nr_inference_workers' value > 5:
+
+  fileid:   fdffd302-f1ef-466c-8f71-ea6776ef5165
+  filename: TCGA-06-0137-01Z-00-DX5.0f06ca27-54e2-490a-8afb-a19600e60619.svs
+  size:     821M, 56002x38719 pixels
+
+The following images trigger the "leaked semaphore objects" error on the
+JS2 g3.large instances if using an 'nr_inference_workers' value > 4:
+
+  fileid:   5018f804-cc47-4081-88e4-55c75095ecc2
+  filename: TCGA-05-4398-01Z-00-DX1.269bc75f-492e-48b1-87ee-85924aa80e74.svs
+  size:     682M, 98304x111360 pixels (= 10.2 billion pixels!!!)
+    | From the TCGA-LUAD project --> goes straight to jail! (see below)
+
+  fileid:   03e2bc97-060e-4575-9510-4d7ec8a9c9e8
+  filename: TCGA-05-4402-01Z-00-DX1.c653ddc2-88c1-45ac-88e7-4e512b8e8d53.svs
+  size:     597M, 80896x100096 pixels (= 8.1 billion pixels!!!)
+    | From the TCGA-LUAD project --> goes straight to jail! (see below)
+
+  fileid:   97263433-36d7-46c6-80f2-6d61c5cdcbe8
+  filename: TCGA-06-0137-01Z-00-DX7.c0c25c01-8602-47a5-8d52-cb323c3432d2.svs
+  size:     778M, 48002x32912 pixels
+
+  fileid:   f167eecc-d056-455f-b11f-da8bdd3388e8
+  filename: TCGA-06-0156-01Z-00-DX2.e1846804-6f1d-4941-866d-dc54278dbba0.svs
+  size:     312M, 40291x39497 pixels
+
+The following images trigger the "leaked semaphore objects" error on the
+JS2 g3.large instances if using an 'nr_inference_workers' value > 3:
+
+  fileid:   f283f239-1df7-4c78-9104-3f2c311a097e
+  filename: TCGA-06-0141-01Z-00-DX2.9c16caf2-d538-4233-9480-1188d85c229d.svs
+  size:     484M, 47006x38019 pixels
+
+  fileid:   0dcd9d19-56c6-4a7d-942d-9d035dc8c37a
+  filename: TCGA-06-0166-01Z-00-DX5.a5de0008-83a4-4bff-8efe-fa70dcc9a6a3.svs
+  size:     686M, 48925x35655 pixels
+
+The following image triggers the "leaked semaphore objects" error on the
+JS2 g3.large instances if using an 'nr_inference_workers' value > 2:
+
+  fileid:   7ff0b47d-4fb6-4b58-bf43-d2dc148c1786
+  filename: TCGA-06-0168-01Z-00-DX2.ff5ffc86-6220-432b-bb9f-0c15bfa1a157.svs
+  size:     1.3G, 58002x41263 pixels
+
+The following images **always** trigger the "leaked semaphore objects" error
+on the JS2 g3.large instances, even with 'nr_inference_workers=1':
+
+  fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
+  filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
+  size:     444M, 83968x56576 pixels (= 4.75 billion pixels!)
+    | Other images from the same project (TCGA-LUAD) also have crazy sizes
+    | in terms of number of pixels (see below) and are particulary good at
+    | breaking run_infer.py so all 541 images from this project are now
+    | excluded via the 'exclude_project_ids' file!
+
+  fileid:   ae4fa8d9-267a-4d47-93f8-e8e2b8beb871
+  filename: TCGA-06-0125-01Z-00-DX2.4f9cef92-2bdb-480d-8704-94289f8b70fb.svs
+  size:     469M, 77905x41217 pixels
+
+  filename: TCGA-02-0337-01Z-00-DX1.c7d3d96c-789b-4844-8731-1279d44955ec.svs
+  filename: TCGA-02-0430-01Z-00-DX1.aa4aaacb-1f80-48f3-84c0-39accafc45a7.svs
+  filename: TCGA-02-0446-01Z-00-DX1.95c368f8-b014-4c87-b93d-d792d876a0e9.svs
+    | Deleting ~/cache/ on hovernet1 and rebooting solved it!
+
+  filename: TCGA-06-0152-01Z-00-DX6.b20146eb-b6a1-4f9f-842f-8761fc489965.svs
+    | Deleting ~/cache/ on hovernet3 and rebooting solved it!
+
+  filename: TCGA-25-1877-01Z-00-DX1.ECD98484-514C-4E9A-913B-F7EC55D6A8FE.svs
+    | on hovernet3 (disk was full!)
+
+  filename: TCGA-06-0171-01Z-00-DX5.223799ea-caac-4314-8e9d-5cb466756a64.svs
+  filename: TCGA-06-0178-01Z-00-DX2.e49e7c16-8370-42ae-977b-f4bd62ad49b6.svs
+  filename: TCGA-06-0178-01Z-00-DX4.16c7b728-c6ba-496f-8dc8-4f5bb4a38e56.svs
+    | Deleting ~/cache/ on hovernet4 and rebooting solved it!
+
+  filename: TCGA-06-0216-01Z-00-DX4.3c6ee8ee-81df-4714-b04d-3088c11b0aa2.svs
+    | Deleting ~/cache/ on hovernet6 and rebooting solved it!
+
+  fileid:   877ab00f-2431-4a99-86a7-53f39e233426
+  filename: TCGA-13-A5FT-01Z-00-DX1.2B292DC8-7336-4CD9-AB1A-F6F482E6151A.svs
+  size:     660M, 97869x42959 pixels (= 4.2 billion pixels!)
+    | From TCGA-OV project (ovarian cancer study).
+    | Deleting ~/cache/ and rebooting hovernet7 did NOT help!
+
+On kakapo1
+----------
+
+The following image triggers the "leaked semaphore objects" error on kakapo1
+if using an 'nr_inference_workers' value > 5:
+
+  fileid:   ??
+  filename: TCGA-06-0209-01Z-00-DX6.4c470a76-e452-42a8-a4bf-3c0bdf9c46ff.svs
+  size:     ??
+
+
+
+===============================================================================
+KeyError in openslide module
+-------------------------------------------------------------------------------
+
+
+  |2024-12-12|16:44:26.525| [ERROR] Crash
+  Traceback (most recent call last):
+    File "/home/hovernet/hover_net/infer/wsi.py", line 748, in process_wsi_list
+      self.process_single_file(wsi_path, msk_path, self.output_dir)
+    File "/home/hovernet/hover_net/infer/wsi.py", line 470, in process_single_file
+      self.wsi_handler = get_file_handler(wsi_path, backend=wsi_ext)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/hovernet/hover_net/misc/wsi_handler.py", line 201, in get_file_handler
+      return OpenSlideHandler(path)
+             ^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/hovernet/hover_net/misc/wsi_handler.py", line 109, in __init__
+      self.metadata = self.__load_metadata()
+                      ^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/hovernet/hover_net/misc/wsi_handler.py", line 119, in __load_metadata
+      level_0_magnification = wsi_properties[openslide.PROPERTY_NAME_OBJECTIVE_POWER]
+                              ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/hovernet/miniconda3/envs/hovernet/lib/python3.12/site-packages/openslide/__init__.py", line 327, in __getitem__
+      raise KeyError()
+  KeyError
+
+Note that the error doesn't kill run_infer.py. The script just skips the
+image and continues to the next.
+
+The images that trigger this error seem to break run_infer.py no matter
+what i.e. it doesn't seem related to what parameters we use when we call
+the script.
+
+All affected images encountered to far are from the TCGA-LUAD project (all
+images from this project are now excluded, see 'exclude_project_ids' file):
+
+  filename: TCGA-05-4384-01Z-00-DX1.CA68BF29-BBE3-4C8E-B48B-554431A9EE13.svs
+  filename: TCGA-05-4390-01Z-00-DX1.858E64DF-DD3E-4F43-B7C1-CE35B33F1C90.svs
+  filename: TCGA-05-4410-01Z-00-DX1.E5B66334-4949-4F45-9200-296B1A2F1AD5.svs
+
+
+
+===============================================================================
+Bus errors (with core dumped)
+-------------------------------------------------------------------------------
+
+
+The following image triggers a Bus error (with core dumped) during the Post
+Proc Phase on the JS2 g3.large instances:
+
+  filename: TCGA-05-4397-01Z-00-DX1.00e9cdb3-b50e-439c-86b0-d7b73b802c0d.svs
+
+This image is from the TCGA-LUAD project and is now excluded via
+the 'exclude_project_ids' file.
+
+
+===============================================================================
+Exhausted memory during Post Proc Phase 1
+-------------------------------------------------------------------------------
+
+
+When post processing (Post Proc Phase 1) the following images, run_infer.py
+gets on the JS2 g3.large instances apparently because the 60 GB of RAM get
+consumed:
+
+  filename: TCGA-23-1022-01Z-00-DX1.AF9E523E-CB0F-4AB5-AD43-C96731BF9141.svs
+    | Deleting ~/cache/ on hovernet7 and rebooting solved it!
+
+  filename: TCGA-25-1635-01Z-00-DX1.D21D2855-43F0-4766-934A-3CE1E3A099B9.svs
+    | on hovernet3: mitigated this by reducing 'nr_post_proc_workers'
+    | from 8 to 6
+
+  filename: TCGA-23-1114-01Z-00-DX1.26CCA42E-4947-4318-A983-D3B31603482E.svs
+    | on hovernet6: mitigated by reducing 'nr_post_proc_workers'
+    | from 8 to 6
+
+Note that this problem got mitigated by reducing 'nr_post_proc_workers' from
+8 to 6.
+
+
+
+===============================================================================
+run_infer.py's cache too big on the JS2 g3.large instances
+-------------------------------------------------------------------------------
+
+
+The following images require so much cache space that they can't be processed
+on the JS2 g3.large instances where the root disk is only 200 GB:
+
+  filename: TCGA-23-2641-01Z-00-DX1.DB792236-39EC-4090-9938-B0915C3378A0.svs
+    | From TCGA-OV project (ovarian cancer study).
+    | 150 chunks!
+    | fills the cache on hovernet2
+    | --> will need to process this image on a machine with more disk space
+
+  filename: TCGA-23-1117-01Z-00-DX1.783914B6-B079-4828-B77B-4C6306FAE4C1.svs
+    | From TCGA-OV project (ovarian cancer study).
+    | 130 chunks!
+    | fills the cache on hovernet6
+    | --> will need to process this image on a machine with more disk space
+
+  filename: TCGA-23-1027-01Z-00-DX1.53F9DFF4-6811-4184-B2FD-1F6706B948FD.svs
+    | From TCGA-OV project (ovarian cancer study).
+    | 99 chunks
+    | --> got resolved by doing some cleaning on hovernet7
+

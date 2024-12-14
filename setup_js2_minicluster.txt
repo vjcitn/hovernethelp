@@ -160,17 +160,27 @@ OVARIAN CANCER RUNS:
     Size of batch: 15 images, total size 27G (smallest 943M, biggest 2.5G)
     Status: RUNNING
 
-- On hovernet2: 31st to 60th images from OVARIAN CANCER study
+- On hovernet2: 31st to 45th images from OVARIAN CANCER study
     i.e. images 922,923,924,925,926,927,928,929,930,931,
-                932,933,934,935,936,937,938,939,940,941,
-                942,943,944,945,946,947,948,949,950,951
+                932,933,934,935,936
     List obtained in R with:
         load('~/imageTCGA/R/sysdata.rda')
-        which(db[,"Project.ID"] == "TCGA-OV")[31:60]
-    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[31:60]' >>infer_batch.log 2>&1 &
+        which(db[,"Project.ID"] == "TCGA-OV")[31:45]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[31:45]' >>infer_batch.log 2>&1 &
     Started on: 2024-12-13 at 3:25 pm PST
-    Size of batch: 30 images, total size 72G (smallest 836M, biggest 3.8G)
+    Size of batch: 15 images, total size 30G?? (smallest 836M, biggest 3.8G)
     Status: RUNNING
+
+- On ?????????: 46th to 60th images from OVARIAN CANCER study
+    i.e. images 937,938,939,940,941,942,943,944,945,946,
+                947,948,949,950,951
+    List obtained in R with:
+        load('~/imageTCGA/R/sysdata.rda')
+        which(db[,"Project.ID"] == "TCGA-OV")[46:60]
+    Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[46:60]' >>infer_batch.log 2>&1 &
+    Started on: NOT STARTED YET!
+    Size of batch: ???
+    Status: NOT STARTED YET!
 
 - On hovernet3: 61st to 75th images from OVARIAN CANCER study
     i.e. images 952,953,954,955,956,957,958,959,960,961,

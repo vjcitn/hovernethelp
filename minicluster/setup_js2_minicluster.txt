@@ -1,0 +1,94 @@
+===============================================================================
+Set up mini cluster on JS2
+-------------------------------------------------------------------------------
+
+Cluster: 7 workers (hovernet1,2,3,4,6,7 + kakapo1)
+         + hoverboss (centralize results)
+
+All nodes are JS2 instances except kakapo1 that is a physical server at DFCI.
+
+See 'setup_hovernet_Ubuntu2404.txt' file in parent directory for how to set
+up the 7 workers.
+
+hoverboss:
+    Jetstream2 instance, Ubuntu 24.04
+    flavor: m3.quad (4 CPUs, 15 GB RAM)
+    root disk: 20 GB (default)
+    user: hovernet
+    password: *******
+
+    Attached volume:  inferdata1 (779 GB)
+
+Note about the size of inferdata1: run_infer.py seems to produce around 450 MB
+of output per image in average, so inferdata1 won't be big enough to store the
+results obtained for the 11765 TCGA images!
+
+Set up hoverboss
+----------------
+
+Only for convenience
+
+    sudo apt-get install tree
+
+Install R 4.4 as documented above
+
+In /media/volume/inferdata1/: create one subdir per worker (i.e.
+subdirs hovernet1,2,3,4,6,7 + kakapo1). They must belong to the hovernet user.
+Make sure to create a new subfolder for each new node added to the cluster.
+
+    git clone https://github.com/hpages/hovernethelp
+    git clone https://github.com/billila/imageTCGA
+
+Cluster setup
+-------------
+
+We must be able to rsync/ssh from each node to hoverboss. For this we
+add the following 'config' file to ~/.ssh on each node:
+
+    IdentityFile /home/hovernet/.ssh/id_rsa
+    UserKnownHostsFile /home/hovernet/.ssh/known_hosts
+    StrictHostKeyChecking no
+    
+    Host hoverboss
+        HostName 149.165.168.137
+
+Make sure to use hoverboss' actual IP address.
+Then test with:
+
+    ssh hoverboss
+
+This must work on all nodes!
+
+Put the following line in the crontab on all nodes:
+
+    ## Push results to hoverboss every 15 min.
+    01,16,31,46 * * * * /usr/bin/rsync -azv /home/hovernet/infer_output hovernet@hoverboss:/media/volume/inferdata1/`hostname` >>/home/hovernet/rsync.log 2>&1
+
+Clone the following repos on each worker:
+
+    # Ilaria's imageTCGA repo:
+    git clone https://github.com/billila/imageTCGA
+
+Run infer_batch.sh on each node:
+
+    # On hovernet1:
+    time hovernethelp/infer_batch.sh '1:10' >>infer_batch.log 2>&1 &
+    # (smallest/largest image: 194M/853M)
+
+    # On hovernet2:
+    time hovernethelp/infer_batch.sh '11:20' >>infer_batch.log 2>&1 &
+    # (smallest/largest image: 357M/2.0G)
+
+    # On hovernet3:
+    time hovernethelp/infer_batch.sh '21:30' >>infer_batch.log 2>&1 &
+    # (smallest/largest image: 190M/2.2G)
+
+    # On hovernet4:
+    time hovernethelp/infer_batch.sh '31:40' >>infer_batch.log 2>&1 &
+    # (smallest/largest image: 645M/3.4G)
+
+    # On kakapo1:
+    time hovernethelp/infer_batch.sh '41:50' >>infer_batch.log 2>&1 &
+
+Will take hours to complete! (between 15 and 25 hours)
+

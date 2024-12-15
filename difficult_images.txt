@@ -1,6 +1,12 @@
-===============================================================================
-==== Keeping track of problems encountered with difficult TCGA images here ====
-===============================================================================
+     ---------------------------------------------------------------------
+
+     Keeping track of problems encountered with difficult TCGA images here
+
+     ---------------------------------------------------------------------
+                   -----------------------------------------
+                             ---------------------
+                                    -------
+                                       -
 
 
 
@@ -86,8 +92,8 @@ JS2 g3.large instances if using an 'nr_inference_workers' value > 2:
   filename: TCGA-06-0168-01Z-00-DX2.ff5ffc86-6220-432b-bb9f-0c15bfa1a157.svs
   size:     1.3G, 58002x41263 pixels
 
-The following images **always** trigger the "leaked semaphore objects" error
-on the JS2 g3.large instances, even with 'nr_inference_workers=1':
+The following images trigger the "leaked semaphore objects" error on the
+JS2 g3.large instances, even with 'nr_inference_workers=1':
 
   fileid:   070defff-1f5d-49e7-85b9-de4508e8a0c9
   filename: TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs
@@ -104,7 +110,13 @@ on the JS2 g3.large instances, even with 'nr_inference_workers=1':
   filename: TCGA-02-0337-01Z-00-DX1.c7d3d96c-789b-4844-8731-1279d44955ec.svs
   filename: TCGA-02-0430-01Z-00-DX1.aa4aaacb-1f80-48f3-84c0-39accafc45a7.svs
   filename: TCGA-02-0446-01Z-00-DX1.95c368f8-b014-4c87-b93d-d792d876a0e9.svs
+  filename: TCGA-02-0451-01Z-00-DX2.02487460-bb28-4750-ac02-f0e92d843aa5.svs
+  filename: TCGA-05-4244-01Z-00-DX1.d4ff32cd-38cf-40ea-8213-45c2b100ac01.svs
+  filename: TCGA-05-4245-01Z-00-DX1.36ff5403-d4bb-4415-b2c5-7c750d655cde.svs
     | Deleting ~/cache/ on hovernet1 and rebooting solved it!
+
+  filename: TCGA-25-1314-01Z-00-DX1.E01C2237-E2D6-4D84-9FB4-624734F30375.svs
+    | on hovernet2
 
   filename: TCGA-06-0152-01Z-00-DX6.b20146eb-b6a1-4f9f-842f-8761fc489965.svs
     | Deleting ~/cache/ on hovernet3 and rebooting solved it!
@@ -112,19 +124,38 @@ on the JS2 g3.large instances, even with 'nr_inference_workers=1':
   filename: TCGA-25-1877-01Z-00-DX1.ECD98484-514C-4E9A-913B-F7EC55D6A8FE.svs
     | on hovernet3 (disk was full!)
 
+  filename: TCGA-25-2391-01Z-00-DX1.3930615C-785B-48D4-BD69-FD87932A518A.svs
+    | image contains 140 chunks!
+    | on hovernet3, error occurred right after Post Proc was done
+    | trying again with --nr_post_proc_workers=5 instead of 6 ?
+    | if that doesn't work, try reducing --batch_size from 48 to 32
+
   filename: TCGA-06-0171-01Z-00-DX5.223799ea-caac-4314-8e9d-5cb466756a64.svs
   filename: TCGA-06-0178-01Z-00-DX2.e49e7c16-8370-42ae-977b-f4bd62ad49b6.svs
   filename: TCGA-06-0178-01Z-00-DX4.16c7b728-c6ba-496f-8dc8-4f5bb4a38e56.svs
+  filename: TCGA-06-0178-01Z-00-DX8.b2b00151-d54b-4807-8cbf-69a74629604f.svs
     | Deleting ~/cache/ on hovernet4 and rebooting solved it!
 
   filename: TCGA-06-0216-01Z-00-DX4.3c6ee8ee-81df-4714-b04d-3088c11b0aa2.svs
     | Deleting ~/cache/ on hovernet6 and rebooting solved it!
+
+  filename: TCGA-23-1119-01Z-00-DX1.44D3D70A-A421-4962-8385-2A3CF8E9880A.svs
+    | image contains 130 chunks!
+    | on hovernet6, error occurred right after Post Proc was done
+    | trying again with --nr_post_proc_workers=5 instead of 6 ?
+    | if that doesn't work, try reducing --batch_size from 48 to 32
 
   fileid:   877ab00f-2431-4a99-86a7-53f39e233426
   filename: TCGA-13-A5FT-01Z-00-DX1.2B292DC8-7336-4CD9-AB1A-F6F482E6151A.svs
   size:     660M, 97869x42959 pixels (= 4.2 billion pixels!)
     | From TCGA-OV project (ovarian cancer study).
     | Deleting ~/cache/ and rebooting hovernet7 did NOT help!
+
+  filename: TCGA-23-1107-01Z-00-DX1.5B9C1283-62B5-4329-873D-009FA939CA69.svs
+    | image contains 130 chunks!
+    | on hovernet7, error occurred right after Post Proc was done
+    | trying again with --nr_post_proc_workers=5 instead of 6 ?
+    | if that doesn't work, try reducing --batch_size from 48 to 32
 
 On kakapo1
 ----------
@@ -219,12 +250,13 @@ Note that this problem got mitigated by reducing 'nr_post_proc_workers' from
 
 
 ===============================================================================
-run_infer.py's cache too big on the JS2 g3.large instances
+The run_infer.py's cache grows too big on the JS2 g3.large instances
 -------------------------------------------------------------------------------
 
 
 The following images require so much cache space that they can't be processed
-on the JS2 g3.large instances where the root disk is only 200 GB:
+on the JS2 g3.large instances where cache is on the root disk and the root
+disk is 200 GB:
 
   filename: TCGA-23-2641-01Z-00-DX1.DB792236-39EC-4090-9938-B0915C3378A0.svs
     | From TCGA-OV project (ovarian cancer study).
@@ -237,6 +269,11 @@ on the JS2 g3.large instances where the root disk is only 200 GB:
     | 130 chunks!
     | fills the cache on hovernet6
     | --> will need to process this image on a machine with more disk space
+
+  filename: TCGA-23-1119-01Z-00-DX1.44D3D70A-A421-4962-8385-2A3CF8E9880A.svs
+    | From TCGA-OV project (ovarian cancer study).
+    | 130 chunks!
+    | fills the cache on hovernet6
 
   filename: TCGA-23-1027-01Z-00-DX1.53F9DFF4-6811-4184-B2FD-1F6706B948FD.svs
     | From TCGA-OV project (ovarian cancer study).

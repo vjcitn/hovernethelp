@@ -1,6 +1,6 @@
-### Manually create ~/infer_results/TCGA-OV/ on hoverboss and the 'json',
-### 'mask', and 'thumb' subfolders, then run the code below from within
-### ~/infer_results/TCGA-OV/.
+### Manually create the '~/infer_results/TCGA-OV/' folder and 'json/',
+### 'mask/', 'thumb/' subfolders on hoverboss, then run the code below
+### from within '~/infer_results/TCGA-OV/'.
 
 PATH_TO_ALL_INFER_OUTPUT <- "/media/volume/inferdata1"
 PROJECT_ID <- "TCGA-OV"
@@ -9,6 +9,8 @@ library(tools)  # for file_path_as_absolute()
 
 load("~/imageTCGA/R/sysdata.rda")
 OV_db <- subset(db, Project.ID %in% PROJECT_ID)
+message("Total nb of images from ", PROJECT_ID, " project ",
+        "in TCGA db: ", nrow(OV_db))
 
 allowed_image_filenames <- OV_db[ , "File.Name"]
 
@@ -24,6 +26,7 @@ allowed_image_filenames <- OV_db[ , "File.Name"]
 }
 
 stopifnot(all(.has_suffix(allowed_image_filenames, ".svs")))
+
 allowed_image_names <- .drop_suffix(allowed_image_filenames, ".svs")
 
 collect_infer_output_files <- function(path_to_infer_output=".",
@@ -70,7 +73,12 @@ add_symlinks <- function(subdir=c("json", "mask", "thumb"))
             file.path(file_path_as_absolute(subdir), ""))
 }
 
+message("")
 add_symlinks("json")
+
+message("")
 add_symlinks("mask")
+
+message("")
 add_symlinks("thumb")
 

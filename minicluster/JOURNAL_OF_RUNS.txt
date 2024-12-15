@@ -1,0 +1,213 @@
+===============================================================================
+
+                                 GENERAL RUNS
+
+                                    ******
+
+                         ------ Very first runs ------
+                             10 images per worker
+
+-------------------------------------------------------------------------------
+Worker: hovernet1
+Global image indices: 1-10
+
+Command: time hovernethelp/infer_batch.sh '1:10' >>infer_batch.log 2>&1 &
+
+Size of batch: 10 images, total size ??? (smallest 194M, biggest 853M)
+
+-------------------------------------------------------------------------------
+Worker: hovernet2
+Global image indices: 11-20
+
+Command: time hovernethelp/infer_batch.sh '11:20' >>infer_batch.log 2>&1 &
+
+Size of batch: 10 images, total size ??? (smallest 357M, biggest 2.0G)
+
+-------------------------------------------------------------------------------
+Worker: hovernet3
+Global image indices: 21-30
+
+Command: time hovernethelp/infer_batch.sh '21:30' >>infer_batch.log 2>&1 &
+
+Size of batch: 10 images, total size ??? (smallest 190M, biggest 2.2G)
+
+-------------------------------------------------------------------------------
+Worker: hovernet4
+Global image indices: 31-40
+
+Command: time hovernethelp/infer_batch.sh '31:40' >>infer_batch.log 2>&1 &
+
+Size of batch: 10 images, total size ??? (smallest 645M, biggest 3.4G)
+
+-------------------------------------------------------------------------------
+Worker: kakapo1
+Global image indices: 41-50
+
+Command: time hovernethelp/infer_batch.sh '41:50' >>infer_batch.log 2>&1 &
+
+Size of batch: 10 images, total size ??? (smallest ???, biggest ???)
+
+-------------------------------------------------------------------------------
+
+                  ------ Following the very first runs  ------
+                             50 images per worker
+
+-------------------------------------------------------------------------------
+Worker: hovernet1
+Global image indices: 51-100
+
+Command: time hovernethelp/infer_batch.sh '51:100' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-12 at 7:09 am PST
+Size of batch: 50 images, total size 56G (smallest 174M, biggest 2.8G)
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet2
+Global image indices: 101-150
+
+Command: time hovernethelp/infer_batch.sh '101:150' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-12 at 7:05 am PST
+Size of batch: 21 images, total size ??? (smallest 71M, biggest 695M)
+Status: COMPLETED
+
+-------------------------------------------------------------------------------
+Worker: hovernet3
+Global image indices: 151-200
+
+Command: time hovernethelp/infer_batch.sh '151:200' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-12 at 6:45 am PST
+Size of batch: 50 images, total size ??? (smallest 22M, biggest 911M)
+Status: COMPLETED
+
+-------------------------------------------------------------------------------
+Worker: hovernet4
+Global image indices: 201-250
+
+Command: time hovernethelp/infer_batch.sh '201:250' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-12 at ???
+Size of batch: 49 images, total size 18G (smallest 30M, biggest 1.3G)
+Status: COMPLETED
+
+-------------------------------------------------------------------------------
+Worker: kakapo1
+Global image indices: 251-300
+
+Command: time hovernethelp/infer_batch.sh '251:300' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-12 at 6:50 am PST
+Size of batch: 50 images, total size 26G (smallest 16M, biggest 1.5G)
+Status: COMPLETED
+
+-------------------------------------------------------------------------------
+Worker: hovernet6
+Global image indices: 301-320
+
+Command: time hovernethelp/infer_batch.sh '301:320' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-13 at 0:06 am PST
+Size of batch: 20 images, total size 8.3G (smallest 49M, biggest 1.4G)
+Status: COMPLETED
+
+
+===============================================================================
+
+                              OVARIAN CANCER RUNS
+
+                                    ******
+
+-------------------------------------------------------------------------------
+Worker: hovernet7
+Goal: Process first 15 images from OVARIAN CANCER study
+Global image indices: 655,656,894,895,896,897,898,899,900,901,
+                      902,903,904,905,906
+  # List obtained in R with:
+  #   load('~/imageTCGA/R/sysdata.rda')
+  #   which(db[,"Project.ID"] == "TCGA-OV")[1:15]
+
+Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[1:15]' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-13 at 3:59 pm PST
+Size of batch: 14 images, total size 21G (smallest 520M, biggest 2.2G)
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet6
+Goal: Process 16th to 30th images from OVARIAN CANCER study
+Global image indices: 907,908,909,910,911,912,913,914,915,916,
+                      917,918,919,920,921
+  # List of global indices obtained in R with:
+  #   load('~/imageTCGA/R/sysdata.rda')
+  #   which(db[,"Project.ID"] == "TCGA-OV")[16:30]
+
+Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[16:30]' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-13 at 5:24 pm PST
+Size of batch: 15 images, total size 27G (smallest 943M, biggest 2.5G)
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet2
+Goal: Process 31st to 45th images from OVARIAN CANCER study
+Global image indices: 922,923,924,925,926,927,928,929,930,931,
+                      932,933,934,935,936
+  # List of global indices obtained in R with:
+  #   load('~/imageTCGA/R/sysdata.rda')
+  #   which(db[,"Project.ID"] == "TCGA-OV")[31:45]
+
+Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[31:45]' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-13 at 3:25 pm PST
+Size of batch: 15 images, total size 30G?? (smallest 836M, biggest 3.8G)
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet4
+Goal: Process 46th to 60th images from OVARIAN CANCER study
+Global image indices: 937,938,939,940,941,942,943,944,945,946,
+                      947,948,949,950,951
+  # List of global indices obtained in R with:
+  #   load('~/imageTCGA/R/sysdata.rda')
+  #   which(db[,"Project.ID"] == "TCGA-OV")[46:60]
+
+Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[46:60]' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-15 at 12:33 pm PST
+Size of batch: 15 images, total size 42G (smallest 1.6G, biggest 3.8G)
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet3
+Goal: Process 61st to 75th images from OVARIAN CANCER study
+Global image indices: 952,953,954,955,956,957,958,959,960,961,
+                      962,963,964,965,966
+  # List of global indices obtained in R with:
+  #   load('~/imageTCGA/R/sysdata.rda')
+  #   which(db[,"Project.ID"] == "TCGA-OV")[61:75]
+
+Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[61:75]' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-13 at 3:44 pm PST
+Size of batch: 15 images, total size 41G (smallest 2.0G, biggest 4.0G)
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: kakapo1
+Goal: Process last 32 images from OVARIAN CANCER study
+Global image indices: 967,968,969,970,971,972,973,974,975,976,
+                      1476,1504,1505,1506,1507,1508,1509,1510,1952,1953,
+                      1954,1955,1956,1957,1958,1964,2005,9880,9881,10847,
+                      10848,11241
+  # List obtained in R with:
+  #   load('~/imageTCGA/R/sysdata.rda')
+  #   which(db[,"Project.ID"] == "TCGA-OV")[76:107]
+
+Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[76:107]' >>infer_batch.log 2>&1 &
+
+Started on: 2024-12-15 at 0:34 am PST
+Size of batch: 32 images, total size 37G (smallest 86M, biggest 3.5G)
+Status: RUNNING
+

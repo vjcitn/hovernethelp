@@ -82,3 +82,6 @@ add_symlinks("mask")
 message("")
 add_symlinks("thumb")
 
+message("")
+message("DONE.")
+

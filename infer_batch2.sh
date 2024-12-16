@@ -15,7 +15,7 @@ TCGA_DATA_URL="https://api.gdc.cancer.gov/data/"
 RSYNC_DEST_DIR="hovernet@hoverboss:/media/volume/inferdata1/$HOSTNAME"
 
 while true; do
-	cd ~/cache && rm -rf *
+	rm -rf ~/cache
 	cd ~/infer_output && rm -rf *
 
 	## Find next image to process (i.e. first image in 'manifest' that

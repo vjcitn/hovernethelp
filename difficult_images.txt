@@ -139,28 +139,19 @@ JS2 g3.large instances, even with 'nr_inference_workers=1':
   filename: TCGA-06-0178-01Z-00-DX8.b2b00151-d54b-4807-8cbf-69a74629604f.svs
     | Deleting ~/cache/ on hovernet4 and rebooting solved it!
 
-  filename: TCGA-25-1319-01Z-00-DX1.71EFB946-ACAF-4BA6-8855-D336268D87F0.svs
-    | image contains 160 chunks!
-    | on hovernet4, error occurred during Post Proc Phase 1
-    | disk was full!
-    | trying again with --nr_post_proc_workers=5 instead of 6 ?
-    | if that doesn't work, try reducing --batch_size from 48 to 32
-
   filename: TCGA-06-0216-01Z-00-DX4.3c6ee8ee-81df-4714-b04d-3088c11b0aa2.svs
     | Deleting ~/cache/ on hovernet6 and rebooting solved it!
-
-  filename: TCGA-23-1119-01Z-00-DX1.44D3D70A-A421-4962-8385-2A3CF8E9880A.svs
-    | image contains 130 chunks!
-    | on hovernet6, error occurred right after Post Proc was done
-    | trying again with --nr_post_proc_workers=5 instead of 6 ?
-    |   --> didn't help (and disk got full)
-    | trying again with --batch_size=32 instead of 48
 
   fileid:   877ab00f-2431-4a99-86a7-53f39e233426
   filename: TCGA-13-A5FT-01Z-00-DX1.2B292DC8-7336-4CD9-AB1A-F6F482E6151A.svs
   size:     660M, 97869x42959 pixels (= 4.2 billion pixels!)
     | From TCGA-OV project (ovarian cancer study).
     | Deleting ~/cache/ and rebooting hovernet7 did NOT help!
+
+  filename: TCGA-23-1109-01Z-00-DX1.FB0886B9-8108-4A74-8A29-FEA4381AD69C.svs
+    | 120 chunks
+    | error right after Post Proc on hovernet7
+    | trying again with batch_size=24 and nr_post_proc_workers=4
 
   filename: TCGA-23-1107-01Z-00-DX1.5B9C1283-62B5-4329-873D-009FA939CA69.svs
     | image contains 130 chunks!
@@ -249,6 +240,8 @@ consumed:
     | on hovernet2
     | --> trying again with --nr_post_proc_workers=5 instead of 6
     |     and --batch_size=32 instead of 48
+    | --> trying again with --nr_post_proc_workers=4 instead of 5
+    |     and --batch_size=16 instead of 32
 
   filename: TCGA-23-1022-01Z-00-DX1.AF9E523E-CB0F-4AB5-AD43-C96731BF9141.svs
     | Deleting ~/cache/ on hovernet7 and rebooting solved it!
@@ -281,6 +274,12 @@ disk is 200 GB:
     | fills the cache on hovernet2
     | --> will need to process this image on a machine with more disk space
 
+  filename: TCGA-25-1319-01Z-00-DX1.71EFB946-ACAF-4BA6-8855-D336268D87F0.svs
+    | From TCGA-OV project (ovarian cancer study).
+    | 160 chunks!
+    | fills the cache on hovernet4
+    | --> will need to process this image on a machine with more disk space
+
   filename: TCGA-23-1117-01Z-00-DX1.783914B6-B079-4828-B77B-4C6306FAE4C1.svs
     | From TCGA-OV project (ovarian cancer study).
     | 130 chunks!
@@ -291,6 +290,7 @@ disk is 200 GB:
     | From TCGA-OV project (ovarian cancer study).
     | 130 chunks!
     | fills the cache on hovernet6
+    | --> will need to process this image on a machine with more disk space
 
   filename: TCGA-23-1027-01Z-00-DX1.53F9DFF4-6811-4184-B2FD-1F6706B948FD.svs
     | From TCGA-OV project (ovarian cancer study).

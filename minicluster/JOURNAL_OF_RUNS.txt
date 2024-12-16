@@ -117,6 +117,27 @@ Started on: 2024-12-13 at 0:06 am PST
 Size of batch: 20 images, total size 8.3G (smallest 49M, biggest 1.4G)
 Status: COMPLETED
 
+                           ------ More runs  ------
+              now using infer_batch2.sh instead of infer_batch.sh
+
+-------------------------------------------------------------------------------
+Worker: hovernet1
+Global image indices: 321-350
+
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+
+Started on: 2024-12-15 at 8:28 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet3
+Global image indices: 351-400
+
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+
+Started on: 2024-12-15 at 9:26 pm PST
+Status: RUNNING
+
 
 ===============================================================================
 
@@ -148,7 +169,7 @@ Global image indices: 907,908,909,910,911,912,913,914,915,916,
   #   load('~/imageTCGA/R/sysdata.rda')
   #   which(db[,"Project.ID"] == "TCGA-OV")[16:30]
 
-Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[16:30]' >>infer_batch.log 2>&1 &
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 
 Started on: 2024-12-13 at 5:24 pm PST
 Size of batch: 15 images, total size 27G (smallest 943M, biggest 2.5G)
@@ -178,7 +199,7 @@ Global image indices: 937,938,939,940,941,942,943,944,945,946,
   #   load('~/imageTCGA/R/sysdata.rda')
   #   which(db[,"Project.ID"] == "TCGA-OV")[46:60]
 
-Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")[46:60]' >>infer_batch.log 2>&1 &
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 
 Started on: 2024-12-15 at 12:33 pm PST
 Size of batch: 15 images, total size 42G (smallest 1.6G, biggest 3.8G)

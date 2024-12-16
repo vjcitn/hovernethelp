@@ -14,6 +14,7 @@ Global image indices: 1-10
 Command: time hovernethelp/infer_batch.sh '1:10' >>infer_batch.log 2>&1 &
 
 Size of batch: 10 images, total size ??? (smallest 194M, biggest 853M)
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: hovernet2
@@ -22,6 +23,7 @@ Global image indices: 11-20
 Command: time hovernethelp/infer_batch.sh '11:20' >>infer_batch.log 2>&1 &
 
 Size of batch: 10 images, total size ??? (smallest 357M, biggest 2.0G)
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: hovernet3
@@ -30,6 +32,7 @@ Global image indices: 21-30
 Command: time hovernethelp/infer_batch.sh '21:30' >>infer_batch.log 2>&1 &
 
 Size of batch: 10 images, total size ??? (smallest 190M, biggest 2.2G)
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: hovernet4
@@ -38,6 +41,7 @@ Global image indices: 31-40
 Command: time hovernethelp/infer_batch.sh '31:40' >>infer_batch.log 2>&1 &
 
 Size of batch: 10 images, total size ??? (smallest 645M, biggest 3.4G)
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: kakapo1
@@ -46,6 +50,7 @@ Global image indices: 41-50
 Command: time hovernethelp/infer_batch.sh '41:50' >>infer_batch.log 2>&1 &
 
 Size of batch: 10 images, total size ??? (smallest ???, biggest ???)
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 
@@ -60,7 +65,7 @@ Command: time hovernethelp/infer_batch.sh '51:100' >>infer_batch.log 2>&1 &
 
 Started on: 2024-12-12 at 7:09 am PST
 Size of batch: 50 images, total size 56G (smallest 174M, biggest 2.8G)
-Status: RUNNING
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: hovernet2
@@ -192,7 +197,7 @@ Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")
 
 Started on: 2024-12-13 at 3:44 pm PST
 Size of batch: 15 images, total size 41G (smallest 2.0G, biggest 4.0G)
-Status: RUNNING
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: kakapo1

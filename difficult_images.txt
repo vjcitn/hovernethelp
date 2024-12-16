@@ -25,6 +25,8 @@ JS2 g3.large instances.
 Most of the time (but not always) deleting the run_infer.py cache (~/cache/)
 and rebooting the instance helps.
 
+Also it seems that reducing 'post_proc_workers' from 6 to 5 helps.
+
 On the JS2 g3.large instances
 -----------------------------
 
@@ -113,28 +115,36 @@ JS2 g3.large instances, even with 'nr_inference_workers=1':
   filename: TCGA-02-0451-01Z-00-DX2.02487460-bb28-4750-ac02-f0e92d843aa5.svs
   filename: TCGA-05-4244-01Z-00-DX1.d4ff32cd-38cf-40ea-8213-45c2b100ac01.svs
   filename: TCGA-05-4245-01Z-00-DX1.36ff5403-d4bb-4415-b2c5-7c750d655cde.svs
+  filename: TCGA-05-4250-01Z-00-DX1.90f67fdf-dff9-46ca-af71-0978d7c221ba.svs
     | Deleting ~/cache/ on hovernet1 and rebooting solved it!
 
   filename: TCGA-25-1314-01Z-00-DX1.E01C2237-E2D6-4D84-9FB4-624734F30375.svs
-    | on hovernet2
+    | Deleting ~/cache/ on hovernet2 and rebooting solved it!
 
   filename: TCGA-06-0152-01Z-00-DX6.b20146eb-b6a1-4f9f-842f-8761fc489965.svs
     | Deleting ~/cache/ on hovernet3 and rebooting solved it!
 
   filename: TCGA-25-1877-01Z-00-DX1.ECD98484-514C-4E9A-913B-F7EC55D6A8FE.svs
     | on hovernet3 (disk was full!)
+    | -> solved this by doing some cleaning, deleting cache, and rebooting!
 
   filename: TCGA-25-2391-01Z-00-DX1.3930615C-785B-48D4-BD69-FD87932A518A.svs
     | image contains 140 chunks!
-    | on hovernet3, error occurred right after Post Proc was done
-    | trying again with --nr_post_proc_workers=5 instead of 6 ?
-    | if that doesn't work, try reducing --batch_size from 48 to 32
+    | on hovernet3: error occurred right after Post Proc was done
+    | -> solved this by reducing 'nr_post_proc_workers' from 6 to 5!
 
   filename: TCGA-06-0171-01Z-00-DX5.223799ea-caac-4314-8e9d-5cb466756a64.svs
   filename: TCGA-06-0178-01Z-00-DX2.e49e7c16-8370-42ae-977b-f4bd62ad49b6.svs
   filename: TCGA-06-0178-01Z-00-DX4.16c7b728-c6ba-496f-8dc8-4f5bb4a38e56.svs
   filename: TCGA-06-0178-01Z-00-DX8.b2b00151-d54b-4807-8cbf-69a74629604f.svs
     | Deleting ~/cache/ on hovernet4 and rebooting solved it!
+
+  filename: TCGA-25-1319-01Z-00-DX1.71EFB946-ACAF-4BA6-8855-D336268D87F0.svs
+    | image contains 160 chunks!
+    | on hovernet4, error occurred during Post Proc Phase 1
+    | disk was full!
+    | trying again with --nr_post_proc_workers=5 instead of 6 ?
+    | if that doesn't work, try reducing --batch_size from 48 to 32
 
   filename: TCGA-06-0216-01Z-00-DX4.3c6ee8ee-81df-4714-b04d-3088c11b0aa2.svs
     | Deleting ~/cache/ on hovernet6 and rebooting solved it!
@@ -143,7 +153,8 @@ JS2 g3.large instances, even with 'nr_inference_workers=1':
     | image contains 130 chunks!
     | on hovernet6, error occurred right after Post Proc was done
     | trying again with --nr_post_proc_workers=5 instead of 6 ?
-    | if that doesn't work, try reducing --batch_size from 48 to 32
+    |   --> didn't help (and disk got full)
+    | trying again with --batch_size=32 instead of 48
 
   fileid:   877ab00f-2431-4a99-86a7-53f39e233426
   filename: TCGA-13-A5FT-01Z-00-DX1.2B292DC8-7336-4CD9-AB1A-F6F482E6151A.svs
@@ -233,15 +244,21 @@ When post processing (Post Proc Phase 1) the following images, run_infer.py
 gets on the JS2 g3.large instances apparently because the 60 GB of RAM get
 consumed:
 
+  filename: TCGA-25-1316-01Z-00-DX1.A9B7F47C-5BDC-4B7D-BC9F-C4C9DBA663C8.svs
+    | image has 104 chunks!
+    | on hovernet2
+    | --> trying again with --nr_post_proc_workers=5 instead of 6
+    |     and --batch_size=32 instead of 48
+
   filename: TCGA-23-1022-01Z-00-DX1.AF9E523E-CB0F-4AB5-AD43-C96731BF9141.svs
     | Deleting ~/cache/ on hovernet7 and rebooting solved it!
 
   filename: TCGA-25-1635-01Z-00-DX1.D21D2855-43F0-4766-934A-3CE1E3A099B9.svs
-    | on hovernet3: mitigated this by reducing 'nr_post_proc_workers'
+    | on hovernet3: solved this by reducing 'nr_post_proc_workers'
     | from 8 to 6
 
   filename: TCGA-23-1114-01Z-00-DX1.26CCA42E-4947-4318-A983-D3B31603482E.svs
-    | on hovernet6: mitigated by reducing 'nr_post_proc_workers'
+    | on hovernet6: solved this by reducing 'nr_post_proc_workers'
     | from 8 to 6
 
 Note that this problem got mitigated by reducing 'nr_post_proc_workers' from

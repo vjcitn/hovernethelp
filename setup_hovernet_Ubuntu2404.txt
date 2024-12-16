@@ -212,11 +212,11 @@ Run run_infer.py
     time python ~/hover_net/run_infer.py \
         --nr_types=6 \
         --type_info_path=$HOME/hover_net/type_info.json \
-        --batch_size=48 \
+        --batch_size=32 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
         --nr_inference_workers=1 \
-        --nr_post_proc_workers=6 \
+        --nr_post_proc_workers=5 \
         wsi \
         --input_dir=$HOME/tcga_images/ \
         --output_dir=$HOME/infer_output/ \
@@ -233,8 +233,8 @@ for kakapo1. Is it going to be > 1 there?
 Using 'nr_post_proc_workers=8' put run_infer.py at risk of exhausing the 60 GB
 of RAM of the JS2 g3.large instance during Post Proc Phase 1 on some images
 (e.g. on TCGA-23-1114-01Z-00-DX1.26CCA42E-4947-4318-A983-D3B31603482E.svs),
-so we use 'nr_post_proc_workers=6'. This means that each post proc worker will
-be able to use up to 10 GB of RAM.
+so we use 'nr_post_proc_workers=5'. This means that each post proc worker will
+be able to use up to 12 GB of RAM.
 
 TIMINGS
 -------

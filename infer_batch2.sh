@@ -77,6 +77,13 @@ while true; do
 		echo "SUCCESS RUNNING run_infer.py SCRIPT [`date`]"
 		echo ""
 		cat manifest-current >>manifest-success
+
+		## Push results to hoverboss
+		echo "---------- START PUSHING RESULTS TO hoverboss ----------"
+		echo ""
+		rsync -azv ~/infer_output $RSYNC_DEST_DIR
+		echo ""
+		echo "---------- DONE PUSHING RESULTS TO hoverboss  ----------"
 	else
 		## Failure
 		echo ""
@@ -85,12 +92,5 @@ while true; do
 		cat manifest-current >>manifest-failure
 	fi
 	rm manifest-current
-
-	## Push results to hoverboss
-	echo ""
-	echo "PUSHHING RESULTS TO hoverboss ..."
-	rsync -azv ~/infer_output $RSYNC_DEST_DIR
-	echo ""
-	echo "DONE PUSHHING RESULTS TO hoverboss."
 done
 

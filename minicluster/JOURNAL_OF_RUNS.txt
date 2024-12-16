@@ -75,6 +75,9 @@ Command: time hovernethelp/infer_batch.sh '101:150' >>infer_batch.log 2>&1 &
 
 Started on: 2024-12-12 at 7:05 am PST
 Size of batch: 21 images, total size ??? (smallest 71M, biggest 695M)
+  # had to exclude 29 images from TCGA-LUAD project,
+  # images from this project seem to cause a lot of trouble
+  # (see 'exclude_project_ids' file in parent dir)
 Status: COMPLETED
 
 -------------------------------------------------------------------------------

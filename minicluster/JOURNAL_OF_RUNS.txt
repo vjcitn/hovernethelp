@@ -1,10 +1,6 @@
 ===============================================================================
-
-                                 GENERAL RUNS
-
-                                    ******
-
-                         ------ Very first runs ------
+                          ****** GENERAL RUNS ******
+                                  1st round
                              10 images per worker
 
 -------------------------------------------------------------------------------
@@ -54,7 +50,8 @@ Status: COMPLETED
 
 -------------------------------------------------------------------------------
 
-                  ------ Following the very first runs  ------
+                          ****** GENERAL RUNS ******
+                                  2nd round
                              50 images per worker
 
 -------------------------------------------------------------------------------
@@ -120,33 +117,10 @@ Started on: 2024-12-13 at 0:06 am PST
 Size of batch: 20 images, total size 8.3G (smallest 49M, biggest 1.4G)
 Status: COMPLETED
 
-                           ------ More runs  ------
-              now using infer_batch2.sh instead of infer_batch.sh
-
--------------------------------------------------------------------------------
-Worker: hovernet1
-Global image indices: 321-350
-
-Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
-
-Started on: 2024-12-15 at 8:28 pm PST
-Status: RUNNING
-
--------------------------------------------------------------------------------
-Worker: hovernet3
-Global image indices: 351-400
-
-Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
-
-Started on: 2024-12-15 at 9:26 pm PST
-Status: RUNNING
-
 
 ===============================================================================
-
-                              OVARIAN CANCER RUNS
-
-                                    ******
+                       ****** OVARIAN CANCER RUNS ******
+                            Project.ID == "TCGA-OV"
 
 -------------------------------------------------------------------------------
 Worker: hovernet7
@@ -161,7 +135,7 @@ Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")
 
 Started on: 2024-12-13 at 3:59 pm PST
 Size of batch: 14 images, total size 21G (smallest 520M, biggest 2.2G)
-Status: RUNNING
+Status: COMPLETED
 
 -------------------------------------------------------------------------------
 Worker: hovernet6
@@ -177,6 +151,7 @@ Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-13 at 5:24 pm PST
 Size of batch: 15 images, total size 27G (smallest 943M, biggest 2.5G)
 Status: RUNNING
+Failure for global image indices: 912,914
 
 -------------------------------------------------------------------------------
 Worker: hovernet2
@@ -191,7 +166,8 @@ Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")
 
 Started on: 2024-12-13 at 3:25 pm PST
 Size of batch: 15 images, total size 30G?? (smallest 836M, biggest 3.8G)
-Status: RUNNING
+Status: COMPLETED
+Failure for global image indices: 926,935
 
 -------------------------------------------------------------------------------
 Worker: hovernet4
@@ -207,6 +183,7 @@ Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-15 at 12:33 pm PST
 Size of batch: 15 images, total size 42G (smallest 1.6G, biggest 3.8G)
 Status: RUNNING
+Failure for global image indices: 938
 
 -------------------------------------------------------------------------------
 Worker: hovernet3
@@ -238,5 +215,49 @@ Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")
 
 Started on: 2024-12-15 at 0:34 am PST
 Size of batch: 32 images, total size 37G (smallest 86M, biggest 3.5G)
+Status: COMPLETED (in 27.5 hrs)
+
+-------------------------------------------------------------------------------
+Worker: kakapo1
+Goal: Process images that failed on the JS2 g3.large instances
+Global image indices: 912,914,926,935,938
+
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+
+Started on: 2024-12-16 at 4:40 am PST
+Status: RUNNING
+
+
+===============================================================================
+                          ****** GENERAL RUNS ******
+                                  3rd round
+              now using infer_batch2.sh instead of infer_batch.sh
+
+-------------------------------------------------------------------------------
+Worker: hovernet1
+Global image indices: 321-350
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-15 at 8:28 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet3
+Global image indices: 351-400
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-15 at 9:26 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet2
+Global image indices: 401-500
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-16 at 4:07 am PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet7
+Global image indices: 501-600
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-16 at 4:10 am PST
 Status: RUNNING
 

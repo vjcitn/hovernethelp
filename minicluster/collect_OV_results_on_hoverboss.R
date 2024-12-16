@@ -1,6 +1,6 @@
-### Manually create the '~/infer_results/TCGA-OV/' folder and 'json/',
-### 'mask/', 'thumb/' subfolders on hoverboss, then run the code below
-### from within '~/infer_results/TCGA-OV/'.
+### Manually create the '~/collected_infer_results/TCGA-OV/' folder
+### and 'json/', 'mask/', 'thumb/' subfolders on hoverboss, then run
+### the code below from within '~/collected_infer_results/TCGA-OV/'.
 
 PATH_TO_ALL_INFER_OUTPUT <- "/media/volume/inferdata1"
 PROJECT_ID <- "TCGA-OV"

@@ -148,16 +148,16 @@ JS2 g3.large instances, even with 'nr_inference_workers=1':
     | From TCGA-OV project (ovarian cancer study).
     | Deleting ~/cache/ and rebooting hovernet7 did NOT help!
 
-  filename: TCGA-23-1109-01Z-00-DX1.FB0886B9-8108-4A74-8A29-FEA4381AD69C.svs
-    | 120 chunks
-    | error right after Post Proc on hovernet7
-    | trying again with batch_size=24 and nr_post_proc_workers=4
-
   filename: TCGA-23-1107-01Z-00-DX1.5B9C1283-62B5-4329-873D-009FA939CA69.svs
-    | image contains 130 chunks!
-    | on hovernet7, error occurred right after Post Proc was done
-    | trying again with --nr_post_proc_workers=5 instead of 6 ?
-    | if that doesn't work, try reducing --batch_size from 48 to 32
+    | Image contains 130 chunks!
+    | Error right after Post Proc on hovernet7.
+    | Reducing 'nr_post_proc_workers' from 6 to 5 solved it!
+
+  filename: TCGA-23-1109-01Z-00-DX1.FB0886B9-8108-4A74-8A29-FEA4381AD69C.svs
+    | Image is 2.0G and has 120 chunks!
+    | Error right after Post Proc on hovernet7.
+    | Reducing 'batch_size' from 32 to 24 and 'nr_post_proc_workers' from 5
+    | to 4 solved it!
 
 On kakapo1
 ----------
@@ -236,12 +236,14 @@ gets on the JS2 g3.large instances apparently because the 60 GB of RAM get
 consumed:
 
   filename: TCGA-25-1316-01Z-00-DX1.A9B7F47C-5BDC-4B7D-BC9F-C4C9DBA663C8.svs
-    | image has 104 chunks!
+    | image is 3.7G and has 104 chunks!
     | on hovernet2
     | --> trying again with --nr_post_proc_workers=5 instead of 6
     |     and --batch_size=32 instead of 48
     | --> trying again with --nr_post_proc_workers=4 instead of 5
     |     and --batch_size=16 instead of 32
+    | still got killed right after Post Proc is finished!
+    | --> will need to process this image on a machine with more RAM
 
   filename: TCGA-23-1022-01Z-00-DX1.AF9E523E-CB0F-4AB5-AD43-C96731BF9141.svs
     | Deleting ~/cache/ on hovernet7 and rebooting solved it!

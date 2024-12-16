@@ -16,7 +16,6 @@ RSYNC_DEST_DIR="hovernet@hoverboss:/media/volume/inferdata1/$HOSTNAME"
 
 while true; do
 	cd ~/cache && rm -rf *
-	cd ~/tcga_images && rm -rf *
 	cd ~/infer_output && rm -rf *
 
 	## Find next image to process (i.e. first image in 'manifest' that
@@ -28,6 +27,7 @@ while true; do
 	fi
 
 	## Download TCGA image listed in 'manifest-current'
+	cd ~/tcga_images && rm -rf *
 	R_EXPR="file_names <- readLines('~/manifest-current');"
 	R_EXPR="$R_EXPR load('~/imageTCGA/R/sysdata.rda');"
 	R_EXPR="$R_EXPR idx <- match(file_names, db[ , 'File.Name']);"

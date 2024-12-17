@@ -23,6 +23,9 @@ while true; do
 	cd ~
 	Rscript ~/hovernethelp/R-scripts/write-manifest-current.R
 	if [ $? -ne 0 ]; then
+		echo ""
+		echo "--------------------------------------------------------"
+		echo "=============== DONE PROCESSING manifest ==============="
 		exit 0
 	fi
 

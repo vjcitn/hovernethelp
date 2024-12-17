@@ -182,7 +182,7 @@ Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 
 Started on: 2024-12-15 at 12:33 pm PST
 Size of batch: 15 images, total size 42G (smallest 1.6G, biggest 3.8G)
-Status: RUNNING
+Status: COMPLETED
 Failure for global image indices: 938
 
 -------------------------------------------------------------------------------
@@ -225,7 +225,7 @@ Global image indices: 912,914,926,935,938
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 
 Started on: 2024-12-16 at 4:40 am PST
-Status: RUNNING
+Status: COMPLETED
 
 
 ===============================================================================
@@ -283,9 +283,9 @@ Started on: 2024-12-16 at 9:54 am PST
 Status: RUNNING
 
 -------------------------------------------------------------------------------
-Worker: ?????
+Worker: hovernet4
 Global image indices: 901-1100 (except 901-976 from TCGA-OV project)
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
-Started on: ???
-Status: NOT STARTED YET!
+Started on: 2024-12-16 at 10:36 pm PST
+Status: RUNNING
 

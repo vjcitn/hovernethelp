@@ -212,11 +212,11 @@ Run run_infer.py
     time python ~/hover_net/run_infer.py \
         --nr_types=6 \
         --type_info_path=$HOME/hover_net/type_info.json \
-        --batch_size=32 \
+        --batch_size=16 \
         --model_mode=fast \
         --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
         --nr_inference_workers=1 \
-        --nr_post_proc_workers=5 \
+        --nr_post_proc_workers=4 \
         wsi \
         --input_dir=$HOME/tcga_images/ \
         --output_dir=$HOME/infer_output/ \
@@ -224,17 +224,25 @@ Run run_infer.py
         --save_mask
 
 Somehow counter-intuitively, 'nr_inference_workers=1' gives the best
-performance on the JS2 g3.large instances (see TIMINGS below). Increasing
-this only seems to make things worse!
+performance on the JS2 g3.large instances and on kakapo1 (see TIMINGS
+below). Increasing this only seems to slow down things.
 
-Still need to figure out what's the optimal 'nr_inference_workers' value
-for kakapo1. Is it going to be > 1 there?
+We use 'nr_post_proc_workers=4' on the JS2 g3.large instances. This means
+that each post proc worker will be able to use up to 15 GB of RAM on these
+instances (which have 60 GB of RAM). Using a 'nr_post_proc_workers' value > 4
+puts the run_infer.py at risk of exhausing the 60 GB of RAM (e.g. on image
+TCGA-23-1114-01Z-00-DX1.26CCA42E-4947-4318-A983-D3B31603482E.svs)
 
-Using 'nr_post_proc_workers=8' put run_infer.py at risk of exhausing the 60 GB
-of RAM of the JS2 g3.large instance during Post Proc Phase 1 on some images
-(e.g. on TCGA-23-1114-01Z-00-DX1.26CCA42E-4947-4318-A983-D3B31603482E.svs),
-so we use 'nr_post_proc_workers=5'. This means that each post proc worker will
-be able to use up to 12 GB of RAM.
+On kakapo1 (128 GB of RAM), it's safe to use 'nr_post_proc_workers=6'. Note
+that using 'nr_post_proc_workers=8' would still work on most TCGA images.
+However we use kakapo1 to process the "difficult images", that is, the
+images that the JS2 g3.large instances were not able to process. These
+images tend to consume more memory than the average TCGA image so we want
+to make sure that all the proc workers will have access to enough RAM.
+By using 'nr_post_proc_workers=6' instead of 'nr_post_proc_workers=8', each
+post proc worker will be able to use up to 21 GB of RAM (in average) instead
+of 16 GB.
+
 
 TIMINGS
 -------
@@ -257,6 +265,15 @@ TIMINGS
 
     kakapo1               64                    32  143 min
     kakapo1               64                    16  109 min
+    kakapo1               48                     8   93 min
+    kakapo1               48                     4   88 min
+    kakapo1               48                     3   86 min
+    kakapo1               48                     2   83 min
+    kakapo1               48                     1   81 min
+
+    kakapo1               32                     1   ?? min
+    kakapo1               24                     1   ?? min
+    kakapo1               16                     1   ?? min
 
 - on TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
 

@@ -62,11 +62,11 @@ while true; do
 	python ~/hover_net/run_infer.py \
 		--nr_types=6 \
 		--type_info_path=$HOME/hover_net/type_info.json \
-		--batch_size=32 \
+		--batch_size=16 \
 		--model_mode=fast \
 		--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
 		--nr_inference_workers=1 \
-		--nr_post_proc_workers=5 \
+		--nr_post_proc_workers=4 \
 		wsi \
 		--input_dir=$HOME/tcga_images/ \
 		--output_dir=$HOME/infer_output/ \

@@ -252,14 +252,16 @@ Worker: hovernet2
 Global image indices: 401-500
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-16 at 4:07 am PST
-Status: RUNNING
+Status: COMPLETED
+#successes/#failures: 100/0
 
 -------------------------------------------------------------------------------
 Worker: hovernet7
 Global image indices: 501-600
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-16 at 4:10 am PST
-Status: RUNNING
+Status: COMPLETED
+#successes/#failures: 93/7
 
 -------------------------------------------------------------------------------
 Worker: hovernet1
@@ -273,7 +275,8 @@ Worker: hovernet3
 Global image indices: 701-800
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-16 at 9:45 am PST
-Status: RUNNING
+Status: COMPLETED
+#successes/#failures: 96/4
 
 -------------------------------------------------------------------------------
 Worker: hovernet6
@@ -287,5 +290,35 @@ Worker: hovernet4
 Global image indices: 901-1100 (except 901-976 from TCGA-OV project)
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-16 at 10:36 pm PST
+Status: COMPLETED
+#successes/#failures: 123/1
+
+-------------------------------------------------------------------------------
+Worker: hovernet2
+Global image indices: 1101-1300
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-18 at 7:55 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet3
+Global image indices: 1301-1500 (except 1476 from TCGA-OV project)
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-18 at 8:35 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet4
+Global image indices: 1501-1700 (except 1504,1505,1506,1507,1508,1509,1510
+                                 from TCGA-OV project)
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-18 at 8:42 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet7
+Global image indices: 1701-1900
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-18 at 8:49 pm PST
 Status: RUNNING
 

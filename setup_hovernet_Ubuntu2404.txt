@@ -210,20 +210,20 @@ Run run_infer.py
     cd ~
     conda activate hovernet
     time python ~/hover_net/run_infer.py \
-        --nr_types=6 \
-        --type_info_path=$HOME/hover_net/type_info.json \
-        --batch_size=12 \
-        --model_mode=fast \
-        --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-        --nr_inference_workers=1 \
-        --nr_post_proc_workers=4 \
-        wsi \
-        --input_dir=$HOME/tcga_images/ \
-        --output_dir=$HOME/infer_output/ \
-        --save_thumb \
-        --save_mask
+      --nr_types=6 \
+      --type_info_path=$HOME/hover_net/type_info.json \
+      --batch_size=12 \
+      --model_mode=fast \
+      --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
+      --nr_inference_workers=1 \
+      --nr_post_proc_workers=4 \
+      wsi \
+      --input_dir=$HOME/tcga_images/ \
+      --output_dir=$HOME/infer_output/ \
+      --save_thumb \
+      --save_mask
 
-Notes:
+Notes
 
 - Somehow counter-intuitively, 'nr_inference_workers=1' gives the best
   performance on the JS2 g3.large instances and on kakapo1 (see TIMINGS
@@ -252,7 +252,6 @@ TIMINGS
 
     machine       batch_size  nr_inference_workers     time
     ------------  ----------  --------------------  -------
-
     JS2 g3.large          64                    20  126 min
     JS2 g3.large         128                    16    error (CUDA out of memory)
     JS2 g3.large          64                    16  114 min
@@ -263,7 +262,7 @@ TIMINGS
     JS2 g3.large          48                     3   82 min
     JS2 g3.large          48                     2   78 min
     JS2 g3.large          48                     1   76 min
-
+    ------------  ----------  --------------------  -------
     kakapo1               64                    32  143 min
     kakapo1               64                    16  109 min
     kakapo1               48                     8   93 min
@@ -277,6 +276,7 @@ TIMINGS
     kakapo1               12                     1   78 min
     kakapo1               10                     1   77 min
     kakapo1                8                     1   77 min
+    ------------  ----------  --------------------  -------
     kakapo1                7                     1    crash after 7 min while
                                                       processing chunk 11/99,
                                                       see (*) below
@@ -290,15 +290,17 @@ TIMINGS
                                                       processing chunk 2/99,
                                                       see (*) below
     ------------  ----------  --------------------  -------
+
 - on TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
 
     machine       batch_size  nr_inference_workers     time
     ------------  ----------  --------------------  -------
-
     JS2 g3.xl             64                    16   24 min
     JS2 g3.large          64                    16   22 min
-
+    ------------  ----------  --------------------  -------
     kakapo1               64                    16   20 min
+    kakapo1               12                     1   12 min
+    kakapo1               10                     1   12 min
     ------------  ----------  --------------------  -------
 
 (*) RuntimeError: Too many open files. Communication with the workers

@@ -340,3 +340,10 @@ Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-20 at 8:02 pm PST
 Status: RUNNING
 
+-------------------------------------------------------------------------------
+Worker: kakapo1
+Global image indices: 2451-2700
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-21 at 0:01 am PST
+Status: RUNNING
+

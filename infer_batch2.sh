@@ -62,7 +62,7 @@ while true; do
 	python ~/hover_net/run_infer.py \
 		--nr_types=6 \
 		--type_info_path=$HOME/hover_net/type_info.json \
-		--batch_size=16 \
+		--batch_size=12 \
 		--model_mode=fast \
 		--model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
 		--nr_inference_workers=1 \

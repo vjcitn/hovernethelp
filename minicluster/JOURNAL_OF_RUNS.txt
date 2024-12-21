@@ -136,6 +136,7 @@ Command: time hovernethelp/infer_batch.sh 'which(db[,"Project.ID"] == "TCGA-OV")
 Started on: 2024-12-13 at 3:59 pm PST
 Size of batch: 14 images, total size 21G (smallest 520M, biggest 2.2G)
 Status: COMPLETED
+Failure for global image indices: 655
 
 -------------------------------------------------------------------------------
 Worker: hovernet6
@@ -220,7 +221,7 @@ Status: COMPLETED (in 27.5 hrs)
 -------------------------------------------------------------------------------
 Worker: kakapo1
 Goal: Process images that failed on the JS2 g3.large instances
-Global image indices: 912,914,926,935,938
+Global image indices: 655,912,914,926,935,938
 
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 
@@ -268,7 +269,8 @@ Worker: hovernet1
 Global image indices: 601-700 (except 655,656 from TCGA-OV project)
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-16 at 9:28 am PST
-Status: RUNNING
+Status: COMPLETED
+#successes/#failures: 66/32
 
 -------------------------------------------------------------------------------
 Worker: hovernet3
@@ -320,5 +322,13 @@ Worker: hovernet7
 Global image indices: 1701-1900
 Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
 Started on: 2024-12-18 at 8:49 pm PST
+Status: RUNNING
+
+-------------------------------------------------------------------------------
+Worker: hovernet1
+Global image indices: 1901-2200 (except 1952,1953,1954,1955,1956,1957,1958,
+                                 1964,2005 from TCGA-OV project)
+Command: time hovernethelp/infer_batch2.sh >>infer_batch2.log 2>&1 &
+Started on: 2024-12-20 at 11:02 am PST
 Status: RUNNING
 

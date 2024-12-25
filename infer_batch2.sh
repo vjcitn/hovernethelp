@@ -12,7 +12,7 @@
 # - This script will treat the 'manifest' file read-only.
 
 TCGA_DATA_URL="https://api.gdc.cancer.gov/data/"
-RSYNC_DEST_DIR="hovernet@hoverboss:/media/volume/inferdata1/$HOSTNAME"
+RSYNC_DEST_DIR="hovernet@hoverboss:/media/volume/inferdata2/$HOSTNAME"
 
 while true; do
 	rm -rf ~/cache

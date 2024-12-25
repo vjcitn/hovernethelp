@@ -267,8 +267,12 @@ The run_infer.py's cache grows too big on the JS2 g3.large instances
 
 
 The following images require so much cache space that they can't be processed
-on the JS2 g3.large instances where cache is on the root disk and the root
-disk is 200 GB:
+on the JS2 g3.large instances where the cache/ folder is on the root disk and
+the root disk is 200 GB:
+
+  filename: TCGA-5P-A9JV-01Z-00-DX1.E9472303-DC58-4CE5-8A91-CB9275BE0891.svs
+    | size: 3.8G, 286 chunks!
+    | --> will need to process this image on a machine with more disk space
 
   filename: TCGA-23-2641-01Z-00-DX1.DB792236-39EC-4090-9938-B0915C3378A0.svs
     | From TCGA-OV project (ovarian cancer study).

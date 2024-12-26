@@ -85,7 +85,7 @@ while true; do
 		echo "---------- START PUSHING RESULTS TO hoverboss ----------"
 		echo ""
 		rsync -azv ~/infer_output $RSYNC_DEST_DIR
-		if [ $? -eq 0 ]; then
+		if [ $? -ne 0 ]; then
 			exit 1
 		fi
 		echo ""

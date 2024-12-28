@@ -1,24 +1,18 @@
 FROM bioconductor/bioconductor_docker:devel
 
+SHELL ["/bin/bash", "-l", "-c"]
+
+# set up user hovernet
+
+RUN groupadd -r hovernet && useradd -r -g hovernet hovernet
+RUN mkdir -p /home/hovernet
+RUN chown hovernet /home/hovernet
+
+# get linux packages
+
 RUN apt update
 RUN apt install tree
-
-#
-#    ## Check drivers compatibility with GPU:
-#    nvidia-smi  # if incompatible then will print something like:
-#                #   Failed to initialize NVML: Driver/library version mismatch
-#                #   NVML library version: 550.120
-#
-#    ## Only if **incompatible** drivers:
-#
-#    ## --- on JS2 instance (NVIDIA A100 GPU), try:
-#    sudo apt-get install nvidia-linux-grid-535  # CUDA 12.2
-#
-#    ## --- on kakapo1 (NVIDIA L40S GPU):
-#    sudo apt-get install nvidia-driver-550  # CUDA 12.4
-#    # or should we install nvidia-linux-grid-550?
-
-#Needed by Python module openslide-python==1.4.1
+RUN apt install -y vim
 
 RUN apt install libopenslide0
 
@@ -26,254 +20,18 @@ RUN apt install libopenslide0
 #
 #    ## Install (based on https://docs.anaconda.com/miniconda/install/#quick-command-line-install)
 
-RUN mkdir -p /home/hovernet
+USER hovernet
 WORKDIR /home/hovernet
 RUN mkdir miniconda3
-#    mkdir ~/miniconda3
+
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /home/hovernet/miniconda3/miniconda.sh
 RUN bash /home/hovernet/miniconda3/miniconda.sh -b -u -p /home/hovernet/miniconda3
-RUN rm /home/hovernet/miniconda3/miniconda.sh
-
     ## Initialize conda and activate base environment
 RUN /home/hovernet/miniconda3/bin/conda init
 
-    ## IMPORTANT: Logout/login for changes to take effect. Or just:
-RUN    source /root/.bashrc
-
-    ## Test:
-RUN echo    which conda  # /home/hovernet/miniconda3/bin/conda
+#RUN echo    which conda  # /home/hovernet/miniconda3/bin/conda
 ## 
 ## For the modified environment.yml file that we'll use below
 ## 
 ##     cd ~
-##     git clone https://github.com/hpages/hovernethelp
-## 
-## Create and activate hovernet environment
-## 
-##     ## Create hovernet environment (based on doc at
-##     ## https://github.com/vqdang/hover_net?tab=readme-ov-file#set-up-environment):
-##     cd ~
-##     git clone https://github.com/vqdang/hover_net
-##     cd ~/hover_net
-## 
-##     ## IMPORTANT: The HoVer-Net folks use torch 1.6.0 in the Set Up Environment
-##     ## section of their README. Problem is, this version of torch does NOT work
-##     ## with the NVIDIA A100 or L40S GPU! So we need to install the latest
-##     ## torch instead: torch 2.5.1. However, this version of torch is not
-##     ## compatible with Python 3.6.12, the version of Python used by the
-##     ## original environment.yml.
-##     ## So we use a modified environment.yml that uses Python 3.12.3 as well
-##     ## a bunch of modules with more recent versions than in the original
-##     ## environment.yml:
-##     cp ~/hovernethelp/environment.yml .
-##     git diff
-##     conda env create -f environment.yml  # USE MODIFIED environment.yml!
-## 
-##     ## Activate hovernet environment:
-##     conda activate hovernet  # put this at the bottom of ~/.bashrc
-## 
-##     ## Install **latest** torch and torchvision modules:
-##     pip index versions torch        # list all torch versions
-##     pip index versions torchvision  # list all torchvision versions
-##     pip install torch==2.5.1 torchvision==0.20.1
-## 
-##     ## From Python, check that torch is compatible with GPU:
-##     import torch
-##     print(torch.__version__)  # 2.5.1+cu124
-##     print(torch.cuda.is_available())  # True
-##     torch.cuda.init()  # should return silently
-## 
-##     ## [UNCONFIRMED] Only if the above fails, then try to disable MIG with:
-##     sudo nvidia-smi -mig 0
-##     ## and reboot:
-##     sudo reboot
-##     ## See https://discuss.pytorch.org/t/cuda-driver-initialization-failed-you-might-not-have-a-cuda-gpu/191316/2 for the details
-##     ## Note that MIG mode is only supported by GPUs based on NVIDIA Ampere
-##     ## architecture like the NVIDIA A100 GPU.
-## 
-##     ## Check run_infer.py's version:
-##     python ~/hover_net/run_infer.py --version  # v1.0
-## 
-## Download PanNuke dataset (145M) from Google Drive
-## 
-##     mkdir ~/pretrained
-##     cd ~/pretrained
-##     pip install gdown
-##     gdown 1SbSArI3KOOWHxRlxnjchO7_MbWzB4lNR
-##     ls -lh hovernet_fast_pannuke_type_tf2pytorch.tar
-## 
-## Install R 4.4 (Ubuntu 24.04 only provides R 4.3)
-## 
-##     #sudo apt install r-base-core  # no! (will get R 4.3)
-## 
-##     ## Not needed on JS2 instances (they already have all this):
-##     #sudo apt-get install build-essential gfortran libreadline-dev libx11-dev libxt-dev zlib1g-dev libbz2-dev liblzma-dev libpcre2-dev libcurl4-openssl-dev libpng-dev libjpeg-dev libtiff-dev libcairo2-dev libicu-dev
-## 
-##     #sudo apt-get install firefox evince  # do we really need this?
-## 
-##     mkdir ~/rdownloads
-##     cd ~/rdownloads
-##     wget https://cran.rstudio.com/src/base/R-4/R-4.4.2.tar.gz
-##     tar zxvf R-4.4.2.tar.gz
-## 
-##     mkdir ~/R-4.4.2
-##     cd ~/R-4.4.2
-##     ~/rdownloads/R-4.4.2/configure
-##     make -j 12
-## 
-##     mkdir ~/bin
-##     cd ~/bin
-##     ln -s ../R-4.4.2/bin/R
-##     ln -s ../R-4.4.2/bin/Rscript
-## 
-##     ## IMPORTANT: Logout/login to get ~/bin persistently added to the PATH.
-##     ## Or just:
-##     source ~/.profile
-## 
-## Add R_DEFAULT_INTERNET_TIMEOUT=3600 to ~/.Renviron
-## 
-## Install GenomicDataCommons package
-## 
-##     ## Needed by CRAN packages xml2 and openssl:
-##     sudo apt-get install libxml2-dev libssl-dev
-## 
-##     Rscript -e 'install.packages("BiocManager", repo="https://cran.rstudio.com"); BiocManager::install("GenomicDataCommons")'
-## 
-## Download 2 WSI images from the TCGA Diagnostic Image Database that we'll
-## use for testing purposes
-## 
-##     ## Use Ilaria's imageTCGA Shiny app to browse the TCGA Diagnostic Image
-##     ## Database and get the file ids of the WSI images to download.
-##     ## Here we download the very first and very last images in the DB.
-##     ## We'll use them later to perform some testing:
-## 
-##     ## Image 1/11765  (818M, medium-size)
-##     Rscript -e 'GenomicDataCommons::gdcdata("27021ae8-db7e-4245-9307-f3bdae43c4b3", progress=TRUE)'
-## 
-##     ## Image 11765/11765  (232M, small)
-##     Rscript -e 'GenomicDataCommons::gdcdata("d1c9c164-e47e-444a-aef2-7535a1a30b12", progress=TRUE)'
-## 
-## Create input/output folders
-## 
-##     mkdir ~/tcga_images ~/infer_output
-## 
-## [OPTIONAL] Create image of the JS2 instance
-## 
-##   The JS2 instance is now ready to be turned into an image for easy cloning
-##   of other identical instances (modulo name and IP address).
-## 
-## 
-## ===============================================================================
-## Test run_infer.py
-## -------------------------------------------------------------------------------
-## 
-## Populate input folder with the WSI images obtained with GenomicDataCommons
-## 
-##     cd ~/tcga_images
-##     ln -s ~/.cache/GenomicDataCommons/27021ae8-db7e-4245-9307-f3bdae43c4b3/TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs
-##     #ln -s ~/.cache/GenomicDataCommons/d1c9c164-e47e-444a-aef2-7535a1a30b12/TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs
-## 
-## Run run_infer.py
-## 
-##     cd ~
-##     conda activate hovernet
-##     time python ~/hover_net/run_infer.py \
-##       --nr_types=6 \
-##       --type_info_path=$HOME/hover_net/type_info.json \
-##       --batch_size=12 \
-##       --model_mode=fast \
-##       --model_path=$HOME/pretrained/hovernet_fast_pannuke_type_tf2pytorch.tar \
-##       --nr_inference_workers=1 \
-##       --nr_post_proc_workers=4 \
-##       wsi \
-##       --input_dir=$HOME/tcga_images/ \
-##       --output_dir=$HOME/infer_output/ \
-##       --save_thumb \
-##       --save_mask
-## 
-## Notes
-## 
-## - Somehow counter-intuitively, 'nr_inference_workers=1' gives the best
-##   performance on the JS2 g3.large instances and on kakapo1 (see TIMINGS
-##   below). Increasing this only seems to slow down things.
-## 
-## - We use 'nr_post_proc_workers=4' on the JS2 g3.large instances. This means
-##   that each post proc worker will be able to use up to 15 GB of RAM on these
-##   instances (which have 60 GB of RAM). Using a 'nr_post_proc_workers' value > 4
-##   puts the run_infer.py at risk of exhausing the 60 GB of RAM (e.g. on image
-##   TCGA-23-1114-01Z-00-DX1.26CCA42E-4947-4318-A983-D3B31603482E.svs)
-## 
-## - On kakapo1 (128 GB of RAM), it's safe to use 'nr_post_proc_workers=6'. Note
-##   that using 'nr_post_proc_workers=8' would still work on most TCGA images.
-##   However we use kakapo1 to process the "difficult images", that is, the
-##   images that the JS2 g3.large instances were not able to process. These
-##   images tend to consume more memory than the average TCGA image so we want
-##   to make sure that all the proc workers will have access to enough RAM.
-##   By using 'nr_post_proc_workers=6' instead of 'nr_post_proc_workers=8', each
-##   post proc worker will be able to use up to 21 GB of RAM (in average) instead
-##   of 16 GB.
-## 
-## TIMINGS
-## -------
-## 
-## - on TCGA-02-0001-01Z-00-DX2.b521a862-280c-4251-ab54-5636f20605d0.svs (818M):
-## 
-##     machine       batch_size  nr_inference_workers     time
-##     ------------  ----------  --------------------  -------
-##     JS2 g3.large          64                    20  126 min
-##     JS2 g3.large         128                    16    error (CUDA out of memory)
-##     JS2 g3.large          64                    16  114 min
-##     JS2 g3.large          64                    12  106 min
-##     JS2 g3.large          48                     6  106 min
-##     JS2 g3.large          48                     5   86 min
-##     JS2 g3.large          48                     4   84 min
-##     JS2 g3.large          48                     3   82 min
-##     JS2 g3.large          48                     2   78 min
-##     JS2 g3.large          48                     1   76 min
-##     ------------  ----------  --------------------  -------
-##     kakapo1               64                    32  143 min
-##     kakapo1               64                    16  109 min
-##     kakapo1               48                     8   93 min
-##     kakapo1               48                     4   88 min
-##     kakapo1               48                     3   86 min
-##     kakapo1               48                     2   83 min
-##     kakapo1               48                     1   81 min
-##     kakapo1               32                     1   82 min
-##     kakapo1               24                     1   84 min
-##     kakapo1               16                     1   80 min
-##     kakapo1               12                     1   78 min
-##     kakapo1               10                     1   77 min
-##     kakapo1                8                     1   77 min
-##     ------------  ----------  --------------------  -------
-##     kakapo1                7                     1    crash after 7 min while
-##                                                       processing chunk 11/99,
-##                                                       see (*) below
-##     kakapo1                6                     1    crash after 6 min while
-##                                                       processing chunk 11/99,
-##                                                       see (*) below
-##     kakapo1                5                     1    crash after 4 min while
-##                                                       processing chunk 3/99,
-##                                                       see (*) below
-##     kakapo1                4                     1    crash after 4 min while
-##                                                       processing chunk 2/99,
-##                                                       see (*) below
-##     ------------  ----------  --------------------  -------
-## 
-## - on TCGA-ZX-AA5X-01Z-00-DX1.8C4B54F5-409B-4A62-AA88-B079606D2D45.svs (232M)
-## 
-##     machine       batch_size  nr_inference_workers     time
-##     ------------  ----------  --------------------  -------
-##     JS2 g3.xl             64                    16   24 min
-##     JS2 g3.large          64                    16   22 min
-##     ------------  ----------  --------------------  -------
-##     kakapo1               64                    16   20 min
-##     kakapo1               12                     1   12 min
-##     kakapo1               10                     1   12 min
-##     ------------  ----------  --------------------  -------
-## 
-## (*) RuntimeError: Too many open files. Communication with the workers
-##     is no longer possible. Please increase the limit using `ulimit -n`
-##     in the shell or change the sharing strategy by calling
-##     `torch.multiprocessing.set_sharing_strategy('file_system')`
-##     at the beginning of your code
-## 
+RUN     git clone https://github.com/hpages/hovernethelp
